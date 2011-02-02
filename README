@@ -1,0 +1,6 @@
+For the Derpnet IRC server project.
+
+The folder RFC contains the new set of RFCs for IRC (numbers 2810-2813). The old RFC (number 1459) is superceded by these.
+
+Open source implementations that we have found should be added here:
+An incomplete Haskell implementation: http://chrisdone.com/posts/2011-01-30-hulk-haskell-irc-server.html

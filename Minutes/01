@@ -1,0 +1,19 @@
+Derpnet Meeting minutes: Friday Feb. 04, 2011
+Attendance: Shidash, Gareth, Robbie, Colin, George, Kit
+Scribe: Colin
+
+Basic idea: open source IRCd with support for Tor and other secure chatting support
+
+Git repo on GitHub:
+ GET A GIT ACCOUNT BITTIES
+ Talk to Kyle - connect Git acct to BUILDS stuff
+ Read the RFCs on there!
+Running it:
+ BU has banned IRC, so Shidash, Kit, or Colin will be hosting it (Probably Kit)
+ Domain Name: derpnet.oss - registered under Robbie
+Planning: 
+ Programming Language: C++ 
+
+Next week: 
+ Read dem RFCs people!
+ Kit: Find out how much Ethernet cable you'd need

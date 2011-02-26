@@ -1,0 +1,12 @@
+Derpnet Meeting Minutes - Friday, February 25 2011
+Attendence: George, Shidash, Robbie, Kit, Colin, Gareth
+
+Robbie: Got Psychatog up and running, look on Git for connection information
+Please talk to him to get an account if you haven't yet
+
+Colin: Server is now an extremely minimal chatserver! This means we can start up working on basic framework kinds of things. Just need to make the socket server code have a good modular interface.
+
+Note: For anyone who is confused about OTR: It is an encryption scheme which ensures:
+- identity of both conversants
+- all messages are going through unaltered (no man-in-the-middle after key authentication)
+- after the fact, both conversants have absolute deniability

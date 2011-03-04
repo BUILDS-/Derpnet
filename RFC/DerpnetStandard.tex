@@ -1,0 +1,97 @@
+%%%
+%
+% Author: George Silvis, III
+% Purpose: Generic header file for all of the mathematical documents I make.
+% Nota Bene: Not all of the text in this is mine.
+% Last Modified: 01/22/11
+%
+%%%
+
+\documentclass[11pt]{article}
+\usepackage[utf8]{inputenc}
+
+\usepackage{geometry}
+\geometry{letterpaper}
+%   read geometry.pdf for detailed page layout information
+
+\usepackage{graphicx}
+
+\usepackage[parfill]{parskip} % Activate to begin paragraphs with an empty line rather than an indent
+
+%%% PACKAGES
+\usepackage{booktabs} % for much better looking tables
+\usepackage{array} % for better arrays (eg matrices) in maths
+\usepackage{paralist} % very flexible & customisable lists (eg. enumerate/itemize, etc.)
+\usepackage{verbatim} % adds environment for commenting out blocks of text & for better verbatim
+\usepackage{subfig} % make it possible to include more than one captioned figure/table in a single float
+
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+
+%%% Commands I've created:
+
+\newcommand{\diff}[1]{\mathrm{d}#1}
+\newcommand{\ptdf}[1]{\partial#1}
+\newcommand{\dee}[2]{\diff{#1}/\diff{#2}}
+\newcommand{\Dee}[2]{\frac{\diff{#1}}{\diff{#2}}}
+\newcommand{\dde}[2]{\ptdf{#1}/\ptdf{#2}}
+\newcommand{\Dde}[2]{\frac{\ptdf{#1}}{\ptdf{#2}}}
+\newcommand{\tends}[1]{\stackrel{#1 \to \infty}{\longrightarrow}}
+\newcommand{\nat}[1]{#1 \in \mathbb{N}}
+\newcommand{\real}[1]{#1 \in \mathbb{R}}
+\newcommand{\z}[1]{#1 \in \mathbb{Z}}
+\newcommand{\del}{\mathbf{\nabla}}
+\newcommand{\FFF}[2]{\left< #1,#2 \right>}
+\newcommand{\SFF}[2]{\left<\left< #1,#2 \right>\right>}
+\newcommand{\mx}[4]{\begin{bmatrix} #1 & #2 \\ #3 & #4 \end{bmatrix}}
+\newcommand{\jac}[4]{\matrix{\dde{#1}{#3}}{\dde{#1}{#4}}{\dde{#2}{#3}}{\dde{#2}{#4}}} % u  v ~u ~v
+\newcommand{\JAC}[4]{\matrix{\Dde{#1}{#3}}{\Dde{#1}{#4}}{\Dde{#2}{#3}}{\Dde{#2}{#4}}}
+\newcommand{\caj}[4]{\matrix{\dde{#1}{#3}}{\dde{#2}{#3}}{\dde{#1}{#4}}{\dde{#2}{#4}}} % Transpose of above
+\newcommand{\CAJ}[4]{\matrix{\Dde{#1}{#3}}{\Dde{#2}{#3}}{\Dde{#1}{#4}}{\Dde{#2}{#4}}}
+\newcommand{\ev}[1]{\text{E} \left\lbrack #1 \right\rbrack}
+\newcommand{\var}[1]{\text{Var} \left\lbrack #1 \right\rbrack}
+\newcommand{\mgf}[1]{\ev{e^{t#1}}}
+\DeclareMathOperator{\sech}{sech} % Why didn't these exist?
+\DeclareMathOperator{\csch}{csch}
+
+%%% SECTION TITLE APPEARANCE
+\usepackage{sectsty}
+\allsectionsfont{\sffamily\mdseries\upshape} % (See the fntguide.pdf for font help)
+% (This matches ConTeXt defaults)
+
+%%% ToC (table of contents) APPEARANCE
+\usepackage[nottoc,notlof,notlot]{tocbibind} % Put the bibliography in the ToC
+\usepackage[titles,subfigure]{tocloft} % Alter the style of the Table of Contents
+\renewcommand{\cftsecfont}{\rmfamily\mdseries\upshape}
+\renewcommand{\cftsecpagefont}{\rmfamily\mdseries\upshape} % No bold!
+
+
+\usepackage{fancyhdr}
+\pagestyle{fancy} % options: empty , plain , fancy
+\renewcommand{\headrulewidth}{0.4pt}
+\setlength{\headheight}{26pt}
+
+\lhead{Derpnet \\ Technical Specification}
+\chead{}
+\rhead{[internal] \\ Revision 0}
+
+\lfoot{}
+\cfoot{\thepage}
+\rfoot{}
+
+%%%
+%
+% End header.
+%
+%%%
+
+\title{}
+\author{George Silvis, III}
+%\date{}
+
+\begin{document}
+
+Muffins.  That is all.
+
+\end{document}

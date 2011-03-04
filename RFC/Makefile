@@ -7,7 +7,11 @@ clean::
 	rm -rf *.aux
 	rm -rf *.gz
 	rm -rf *.dvi
-	rm -rf *.pdf
 	rm -rf *~
 	rm -rf .*~
+	clear
+
+reallyclean::
+	clean
+	rm -rf *.pdf
 	clear

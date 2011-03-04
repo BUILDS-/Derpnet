@@ -1,0 +1,24 @@
+Derpnet Minutes -- Friday 3/4/11
+
+Attendance:
+Robbie
+Shidash
+George
+Gareth
+Colin's busy rokking out.
+
+More documentation about project incoming.
+We migrated to GPL.
+	Standard header should be included in every source code file.
+	Documentation should have it too, in some form.
+Good and evil eradicated. (Thank you Robbie)
+Where next?
+	-Core of IRC
+	-Extending IRC (eg encryption)
+We'll branch the repo, and start working on both.
+atogatog accounts.
+
+#builds at Freenode is being registered.
+We could move to #builds-derpnet when that is successful.
+
+Start working!

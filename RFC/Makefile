@@ -1,3 +1,7 @@
+derp::
+	pdflatex DerpnetStandard.tex
+	clear
+
 clean::
 	rm -rf *.log
 	rm -rf *.aux
@@ -7,4 +11,3 @@ clean::
 	rm -rf *~
 	rm -rf .*~
 	clear
-	ls

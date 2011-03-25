@@ -1,0 +1,13 @@
+Minutes for 3/25/11
+
+Atogatog updated, current. Get accounts settled.
+
+We have two branches:
+Old stuff: George, Shidash
+New stuff: Everyone... else?
+
+Colin: Sockets. Do them. Everyone else hats them.
+
+Robbie has been documenting. Draft pushed soon.
+
+Aaaaaaand... we're done.

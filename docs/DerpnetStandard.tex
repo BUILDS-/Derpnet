@@ -124,11 +124,6 @@ which is located at
 
 \subsection{Licensing}
 
-All code in the project is licensed under the GNU General Public License
-version 3.  A copy of this license can be found in the COPYING.txt file within
-the repository, or obtained from the GNU project
-\href{http://www.gnu.org/licenses/gpl.txt}{http://www.gnu.org/licenses/gpl.txt}.
-
 % it would be really awesome (not to mention really useless) to make this a
 % partial quine so that we only need to put the text of the GPL in once
 
@@ -276,19 +271,55 @@ and secure.
 This method will attempt to comply with the IRC RFC documents as much as is
 possible without compromise to the security of the servers themselves.  We
 will include the NickServ implementation discussed above in this mode of
-connection.  It will operate on port 6667, which has become the
-\textit{de-facto} standard for unencrypted IRC.  This will only be a temporary
+connection.  This ``legacy'' will operate on port 6667, which has become the
+\textit{de facto} standard for unencrypted IRC.  This will only be a temporary
 means of IRC connection, and, as it is considered insecure, will be depricated
 upon readiness of the ``encrypted'' connection schema and removed entirely
 upon readiness of the ``secure'' connection schema.
 
 \subsubsection{Encrypted IRC Connection}
 
+This mode of connection will operate off 6697, which has become standard, as
+well as potentially other ports.  This mode of interface is designed to allow
+existing clients, such as irssi, pidgin/Adium/finch, and others that have
+given security at least a token amount of work, to be able to use the Derpnet
+infrastructure.  All connections will be encrypted ssl, and will attempt to
+provide as much of the ``secure'' connection schema as is possible without
+breaking compatability with these clients.
+
 \subsubsection{Secure IRC Connection}
+
+This is our most secure connection scheme.  All connections to and from the
+server will be encrypted using OTR.  In addition, to both increase security
+and reduce server load, where possible the two participants of a private query
+will be directly connected over OTR.  We will again use the NickServ scheme
+mentioned above to prevent DDoS.
+
+Finally, we will introduce a new mode for channels similar to +R (which
+indicates that only users registered users can join) such that only users that
+are connected over this secure method may join.  (TODO: decide what mode this
+should be.  We could commandeer +R since only registered users can exist
+on-network anyway, or make a new one to eliminate confusion.)
 
 \section{Unresolved Questions}
 
+In the order that they occurred to me in:
+
+\begin{itemize}
+\item 
+  What should the new mode be?
+\item
+  What of the channel prefixes from the RFC do we want to implement?
+\item
+  Are we C++ exclusive, or do we allow language mixing?
+\end{itemize}
+
 \section{Further Reading}
+
+We have included the IRC RFCs in our repository.  We also recommend perusal of
+any documents you can find on OTR, as well as spending some time on an IRC
+network to get a feel for how the system as a whole behaves.  In addition, any
+expertise / insight into email systems would be greatly appreciated.
 
 \section{Credits}
 

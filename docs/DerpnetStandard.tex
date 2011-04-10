@@ -1,18 +1,18 @@
 % This file is part of Derpnet.
-%
-% Derpnet is free software: you can redistribute it and/or modify
-% it under the terms of the GNU General Public License as published by
-% the Free Software Foundation, either version 3 of the License, or
-% (at your option) any later version.
-%
-% Derpnet is distributed in the hope that it will be useful,
-% but WITHOUT ANY WARRANTY; without even the implied warranty of
-% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-% GNU General Public License for more details.
-%
-% You should have received a copy of the GNU General Public License
-% along with Derpnet.  If not, see <http://www.gnu.org/licenses/>.
-% 
+
+% Derpnet is free software: you can redistribute it and/or modify it under the
+% terms of the GNU General Public License as published by the Free Software
+% Foundation, either version 3 of the License, or (at your option) any later
+% version.
+
+% Derpnet is distributed in the hope that it will be useful, but WITHOUT ANY
+% WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+% FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+% details.
+
+% You should have received a copy of the GNU General Public License along with
+% Derpnet.  If not, see <http://www.gnu.org/licenses/>.
+ 
 % Copyright (C) 2011 The Derpnet Team.
 
 %%%
@@ -33,14 +33,18 @@
 
 \usepackage{graphicx}
 
-\usepackage[parfill]{parskip} % Activate to begin paragraphs with an empty line rather than an indent
+\usepackage[parfill]{parskip} % Activate to begin paragraphs with an empty
+                              % line rather than an indent
 
 %%% PACKAGES
 \usepackage{booktabs} % for much better looking tables
 \usepackage{array} % for better arrays (eg matrices) in maths
-\usepackage{paralist} % very flexible & customisable lists (eg. enumerate/itemize, etc.)
-\usepackage{verbatim} % adds environment for commenting out blocks of text & for better verbatim
-\usepackage{subfig} % make it possible to include more than one captioned figure/table in a single float
+\usepackage{paralist} % very flexible & customisable lists
+                      % (eg. enumerate/itemize, etc.)
+\usepackage{verbatim} % adds environment for commenting out blocks of text &
+                      % for better verbatim
+\usepackage{subfig} % make it possible to include more than one captioned
+                    % figure/table in a single float
 
 \usepackage{amsmath}
 \usepackage{amssymb}
@@ -64,9 +68,9 @@
 \newcommand{\FFF}[2]{\left< #1,#2 \right>}
 \newcommand{\SFF}[2]{\left<\left< #1,#2 \right>\right>}
 \newcommand{\mx}[4]{\begin{bmatrix} #1 & #2 \\ #3 & #4 \end{bmatrix}}
-\newcommand{\jac}[4]{\matrix{\dde{#1}{#3}}{\dde{#1}{#4}}{\dde{#2}{#3}}{\dde{#2}{#4}}} % u  v ~u ~v
+\newcommand{\jac}[4]{\matrix{\dde{#1}{#3}}{\dde{#1}{#4}}{\dde{#2}{#3}}{\dde{#2}{#4}}}
 \newcommand{\JAC}[4]{\matrix{\Dde{#1}{#3}}{\Dde{#1}{#4}}{\Dde{#2}{#3}}{\Dde{#2}{#4}}}
-\newcommand{\caj}[4]{\matrix{\dde{#1}{#3}}{\dde{#2}{#3}}{\dde{#1}{#4}}{\dde{#2}{#4}}} % Transpose of above
+\newcommand{\caj}[4]{\matrix{\dde{#1}{#3}}{\dde{#2}{#3}}{\dde{#1}{#4}}{\dde{#2}{#4}}}
 \newcommand{\CAJ}[4]{\matrix{\Dde{#1}{#3}}{\Dde{#2}{#3}}{\Dde{#1}{#4}}{\Dde{#2}{#4}}}
 \newcommand{\ev}[1]{\text{E} \left\lbrack #1 \right\rbrack}
 \newcommand{\var}[1]{\text{Var} \left\lbrack #1 \right\rbrack}
@@ -114,51 +118,173 @@
 \section{Preamble}
 
 This is the documentation of standards for the Derpnet secure communication
-setup.  The latest version of this document can be found in our git
-repository which is located \href{https://github.com/BUILDS-/Derpnet}{here}.
+setup.  The latest version of this document can be found in our git repository
+which is located at
+\href{https://github.com/BUILDS-/Derpnet}{https://github.com/BUILDS-/Derpnet}.
 
 \subsection{Licensing}
 
 All code in the project is licensed under the GNU General Public License
-version 3.  A copy of this license can be found in the COPYING.txt file
-within the repository, or obtained from the GNU project
-\href{http://www.gnu.org/licenses/gpl.txt}{here}. 
+version 3.  A copy of this license can be found in the COPYING.txt file within
+the repository, or obtained from the GNU project
+\href{http://www.gnu.org/licenses/gpl.txt}{http://www.gnu.org/licenses/gpl.txt}.
+
+% it would be really awesome (not to mention really useless) to make this a
+% partial quine so that we only need to put the text of the GPL in once
+
+Derpnet is free software: you can redistribute it and/or modify it under the
+terms of the GNU General Public License as published by the Free Software
+Foundation, either version 3 of the License, or (at your option) any later
+version.
+
+Derpnet is distributed in the hope that it will be useful, but WITHOUT ANY
+WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along with
+Derpnet.  If not, see $<$\href{http://www.gnu.org/licenses/}{http://www.gnu.org/licenses/}$>$.
+ 
+Copyright (C) 2011 The Derpnet Team.
+
+\subsection{Contributions and External Code}
+
+In accordance with our license, we will not depend on any proprietary code.
+While we prefer the GPL to other licenses, we recognize that this is not ideal
+for all developers and contributors.  In order to not restrict contributions
+and existing code use, we will accept and use code under BSD, MIT, and other
+open source licenses, though for ease of distribution, this code may
+eventually be replaced with GPL-licensed code.
 
 \subsection{Declaration of Purpose}
 
 The Derpnet project is designed with three goals in mind: security,
-transparency, and usability.
+transparency, and usability.  We believe that all three are necessary, and
+that any system missing even one of the three is divergent from ideal.
 
 \subsubsection{Security}
 
-For us, ``security'' encompasses both security in the traditional sense as well
-as anonymity.  Our idea is that the establishment of online identities
-completely unassociated with their corresponding ``real-world'' counterparts
-allows for ljadfglsdgbj
+For us, ``security'' encompasses both security in the traditional sense as
+well as anonymity.  Traditionally, security has often come at the cost of
+anonymity.  For example, email accounts have often been protected by
+``security questions'' requiring personal information to answer.  With this
+project, however, we are exploring the idea that this dependence on personal
+information from the ``real world'' which many would prefer to keep private
+may be unnecessary.  Instead, one can create an identity completely separate
+from who they were born as, and attach everything to that, rather than to
+their name.
+
+For example, consider a service providing secure email.  This particular
+service performs all of its communication with clients over ssl/tls and the
+https protocol for web interfacing.  To register an account, one need only
+entire the desired account name and password of said account, and it will be
+granted.  The user can then use this account to register for other services
+based off of the email account thus created.  Anonymity is protected, as there
+is no way to determine who the user is from the information provided to the
+email system (with the exception of IP-based analysis, which can be easily
+avoided if the user connected over Tor or similar service).  Security in the
+traditional sense can also be supplied, as the email account that has been
+created can be used as the basis for authentication of other services.  The
+user need not even trust the email provider with the text of their emails;
+with the ready availability of technologies such as PGP, this is no longer
+necessary.
+
+The one down-side to this approach is that the email becomes a choke-point.
+That is, if the user forgets the passphrase to the email account, then,
+depending on the setup of the services that have been anchored upon it, the
+identity may be completely lost.  Fortunately, many services today allow users
+to easily change the email basis for their identity, which does much to
+relieve this problem.
 
 \subsubsection{Transparency}
 
-Security through obscurity is no security at all.  A malicious attacker is
-capable of reverse-engineering any component of a system, and generally is able
-do so in a reasonably short amount of time.  Strong security relies on the
-strength of its algorithms, not on the obscurity of said algorithms.  To that
-end, we have chosen to take our development model to the extreme opposite, where
-all our code is open to analysis by all.  In this way, we can benefit from the
-expertise of the community while still maintaining a small, focused core team.
+For the threat vector that Derpnet is designed to protect against, security
+through obscurity is no security at all.  An attacker is capable of
+reverse-engineering any component of a system, and many are skilled enough or
+have resources enough that the time to reverse a system is negligible.  By
+this choice of attacker to defend against, we do not deny the problem of
+lower-tech attacks such as keyboard logging for the purpose of passphrase
+sniffing, but rather suggest that defenses against such attacks as these be
+employed in addition to the protection a service like Derpnet provides.
+
+Since there is thus nothing to be gained by the concealment of our system
+architecture and implementation, Derpnet is Open-Source Software under the
+terms of the GNU GPL.  This means that any user is free to download the source
+code and tinker with it.  The purpose of our core team is to function as both
+development leads and a semi-regulatory body so that our code remains cohesive
+enough to be useful while adding new features, bug-fixes, and the like.
 
 \subsubsection{Usability}
 
-
-
-\subsection{Contributions and External Code}
+We judge any system that cannot be used, no matter how secure or transparent,
+to be without purpose.  It is our task as developers to ensure that our system
+is not only useful to but also usable by all of our users.  To that end, code
+integrity is our responsibility, as well as adherence to standards.  To
+express that in practical terms, if we claim code should compile on your
+setup, and it does not, it is our fault, not yours.  In addition, we have
+provided multiple means of access to all of our subsystems, as will be
+discussed below.
 
 \section{Architecture}
 
+In accordance with our attempt toward transparency, this section attempts to
+explain the infrastructure that will power the initial Derpnet.  We make use
+of the anonymity-model discussed in the security section.
+
 \subsection{Email Server}
+
+We intend to use an email service as the basis for all of the other services
+we provide.  There will be multiple ways to access as an email account: a
+secure (https) webmail interface will exist, and additionally we will provide
+secure pop and / or imap access with smtp message delivery.  Creating an
+account on this system will require no other information than the desired
+username and passkey, though other procedures to eliminate abuse (such as
+idle account deletion, or the dreaded CAPTCHA) may require implementation and
+use as well.
+
+To encourage proper use of services, we encourage users to make use of the
+email thus created as the basis for all other services, though, in the
+interests of both usability and security, we will not require it.
 
 \subsection{The IRC Protocol}
 
-\subsection{OTR \&\& SSL Encryption}
+Internet Relay Chat is one of the oldest forms of internet-based inter-user
+communication, and is unique for its room-based architecture.  As it has been
+in use for many years, modifications to the basic protocol have developed,
+some useful, and some less so.  Perhaps the most important has been the
+implementation of ssl connections (typically on port 6697).  In addition, many
+servers provide NickServ implementations which allow users to authenticate
+themselves, which increases security without sacrificing any more anonymity
+than an email address.  However, with the increased use of Tor and other
+proxies, many networks have felt the need to block the use of such services in
+order to prevent their abuse for DDoS and other attacks.
+
+Obviously, if it were possible to use Tor and other anonymizing networks to
+connect to an IRC server without possibility of their abuse, it would be
+beneficial from a security perspective.  We believe that we can use NickServ
+to solve this problem.  By requiring all users to be registered with NickServ
+(depositing an email for confirmation purposes), there becomes no inherent
+difference between a Tor / proxied connection and any other connection.  Sure,
+the user must identify, but we think, after our own experience with IRC, that
+most serious users will want to do this anyway, so the inconvenience is
+minimal.
+
+In addition, we define three methods of connection to IRC: legacy, encrypted,
+and secure.
+
+\subsubsection{Legacy IRC Connection}
+
+This method will attempt to comply with the IRC RFC documents as much as is
+possible without compromise to the security of the servers themselves.  We
+will include the NickServ implementation discussed above in this mode of
+connection.  It will operate on port 6667, which has become the
+\textit{de-facto} standard for unencrypted IRC.  This will only be a temporary
+means of IRC connection, and, as it is considered insecure, will be depricated
+upon readiness of the ``encrypted'' connection schema and removed entirely
+upon readiness of the ``secure'' connection schema.
+
+\subsubsection{Encrypted IRC Connection}
+
+\subsubsection{Secure IRC Connection}
 
 \section{Unresolved Questions}
 

@@ -15,6 +15,7 @@
 * along with Derpnet.  If not, see <http://www.gnu.org/licenses/>.
 *
 * Copyright (C) 2011 The Derpnet Team.
+*/
 
 #include <iostream>
 #include <sys/types.h>

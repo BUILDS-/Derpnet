@@ -16,7 +16,7 @@
  *
  * Copyright (C) 2011 The Derpnet Team.
  */
-*/
+
 
 #include <pthread.h>
 

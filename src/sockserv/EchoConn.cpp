@@ -13,22 +13,29 @@ EchoConn::EchoConn() {
   //i dunno wut
 }
 
-EchoConn::EchoConn(int sockd) {
+EchoConn::EchoConn(int sockd, SockServ* serv, struct sockaddr *client) {
   this->conn_desc = sockd;
+  this->parent = serv;
 }
 
 void EchoConn::RunLoop() {
-  char buf[4];
-  bzero(buf,4);
+  char buf[64];
+  bzero(buf,64);
   int stat;
   string msgbuf(""), line("");
   int llength;
+
   while(true) {
-    stat = read(conn_desc,buf,3);
+    //read bytes from socket. If the message so far has a newline, send it up to the newline.
+    stat = read(conn_desc,buf,63);
     if(stat == -1) {
+      printf("Client connection %d exploded socket. Closing.\n",conn_desc);
+      parent->connections.remove(conn_desc);
 	  pthread_exit(NULL);
       return;
     } else if (stat == 0) {
+      printf("Client connection %d closed socket. Closing.\n",conn_desc);
+      parent->connections.remove(conn_desc);
       pthread_exit(NULL);
       return;
     } else {
@@ -37,9 +44,15 @@ void EchoConn::RunLoop() {
       if(llength != -1) {
         line = msgbuf.substr(0,llength+1);
         msgbuf = msgbuf.substr(llength+1);
-  	    write(conn_desc,line.c_str(),llength);
+        try {
+          parent->sendMessage(line);
+        } catch(...) {
+          printf("Send error\n");
+        }
         if(line.compare("EXIT\n") == 0) {
+		  printf("Client connection %d requested close. Complying.\n", conn_desc);
 		  close(conn_desc);
+      parent->connections.remove(conn_desc);
           pthread_exit(NULL);
 		  return;
 		}
@@ -47,12 +60,22 @@ void EchoConn::RunLoop() {
     }
   }
 }
+
 int EchoConn::Start() {
-  return pthread_create(&thrd, NULL, EchoConn::DoLoop, (void *) conn_desc);
+  //threading ;_;
+  return pthread_create(&thrd, NULL, EchoConn::DoLoop, (void *) this);
 }
 
+void EchoConn::sendMsg(string msg) {}
+
+//Static method for starting the actual loop after the thread has been split
 void * EchoConn::DoLoop(void* args) {
-  int c;
-  c = (int)args;
-  EchoConn(c).RunLoop();
+  EchoConn c;
+  c = *((EchoConn *)args);
+  try {
+    EchoConn(c).RunLoop();
+  } catch (int e) {
+    printf("ERROR\n");
+    printf("ERROR: %d\n",e);
+  }
 }

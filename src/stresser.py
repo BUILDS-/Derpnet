@@ -1,5 +1,6 @@
 import socket
 import time
+import sys
 global tot
 global worked
 worked = 0
@@ -7,15 +8,10 @@ tot = 0
 
 def openConn() :
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    s.connect(('127.0.0.1',6667))
-    s.send('test\n' * 5000)
+    s.connect((sys.argv[1],int(sys.argv[2])))
+    s.send('test\n' * int(sys.argv[3]))
     time.sleep(0.1)
-    worked = False
-    if len(s.recv(65536)) == 20000 :
-        worked = True
-    s.close()
-    return worked
+    print len(s.recv(65536))
 
 for i in range(40) :
-    if openConn() :
-        worked += 1
+    openConn()

@@ -21,10 +21,12 @@ def runInput(screen, window, sock) :
     x = 1
     llength = 0
     s = ""
-    while x == -1 or not chr(x) == "q"  :
+    while True :
       x = window.getch()
       if not x == -1:
         if x == 13 :
+          if s == '/exit' :
+            return
           sock.send(s + '\n')
           s = ""
           llength = 0
@@ -32,8 +34,6 @@ def runInput(screen, window, sock) :
           s += chr(x)
           window.addstr(1,llength, chr(x))  
           llength += 1
-        if x == ord('q') :
-          return
       window.refresh()
   except :
     return
@@ -55,13 +55,14 @@ screen = initSc()
 linesWin = curses.newwin(HEIGHT-3,WIDTH,0,0)
 inputWin = curses.newwin(3,WIDTH,HEIGHT-3,0)
 
-s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-s.connect(('127.0.0.1',6668))
+import sys
 try :
+  s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+  s.connect((sys.argv[1],int(sys.argv[2])))
   t = threading.Thread(target=runInput,args=(screen,inputWin,s))
   t.start()
   runOut(screen,linesWin,s)
+  s.close()
 except :
   pass
-s.close()
 clSc(screen)

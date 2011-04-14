@@ -1,6 +1,7 @@
 import socket
+import sys
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-s.connect(('24.63.226.212',6667))
+s.connect((sys.argv[1], int(sys.argv[2])))
 connClosed = False
 while not connClosed :
     strng = raw_input('>')

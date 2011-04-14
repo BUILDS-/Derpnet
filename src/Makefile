@@ -22,3 +22,6 @@ derpnet : main.o
 main.o : main.cpp sockserv/EchoConn.cpp sockserv/EchoConn.h \
 	sockserv/SockServ.cpp sockserv/SockServ.h
 	g++ -c $(FLAGS) main.cpp
+clean :
+	rm main.o derpnet
+all : derpnet clean

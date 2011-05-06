@@ -19,10 +19,13 @@ FLAGS = -pthread
 
 derpnet : main.o
 	g++ -o derpnet $(FLAGS) main.o
+
 main.o : main.cpp sockserv/EchoConn.cpp sockserv/EchoConn.h \
 	sockserv/SockServ.cpp sockserv/SockServ.h \
 	sockserv/Connection.cpp sockserv/Connection.h
 	g++ -c $(FLAGS) main.cpp
+
 clean :
 	find . -type f -name "*.o" -delete
+	rm derpnet
 all : clean derpnet

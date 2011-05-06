@@ -26,6 +26,7 @@ class SockServ
 {
  public:
   SockServ();
+  void setCallBack(void (*)(int,SockServ*,sockaddr*));
   //SockServ(Thing daemon);
   bool beginListen(int port, int conn_type);
   void sendMessage(string mesg);
@@ -33,4 +34,5 @@ class SockServ
   list<int> connections;
  private:
   int listener;
+  void (*callBack)(int, SockServ*, sockaddr*);
 };

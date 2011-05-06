@@ -25,16 +25,21 @@
 #include <arpa/inet.h>
 #include <stdlib.h>
 #include "SockServ.h"
-#include "EchoConn.cpp"
+#include "Connection.cpp"
 #include <list>
 #include <string>
-using namespace std;
 
+using namespace std;
 SockServ::SockServ() {
   //TODO
   MAX_CONNECTIONS = 10;
   MAX_INC_CONNECTIONS = 5;
 }
+
+void SockServ::setCallBack(void (*cb)(int,SockServ*,sockaddr*)) {
+  callBack=cb;
+}
+
 void SockServ::sendMessage(string mesg) {
   list<int>::iterator i;
   for(i = connections.begin(); i != connections.end(); i++) {
@@ -62,7 +67,6 @@ bool SockServ::beginListen(int port, int conn_type) {
   printf("Binding socket\n");
   if(bind(listener, (struct sockaddr *)&dest, sizeof dest) == -1) {
     printf("Bind failed D:\n");
-    perror("derp!!!\n");
     return false;
   } else {
     printf("Bind succeded :D\n");
@@ -94,11 +98,9 @@ bool SockServ::beginListen(int port, int conn_type) {
     } else {
       printf("Client descriptor: %d\n", client_desc);
       connections.push_back(client_desc);
-      EchoConn newConn(client_desc, this, (struct sockaddr* )&client);
-      newConn.Start();
+	  callBack(client_desc, this, (struct sockaddr* )&client);
     }
   }
   return true;
 }
-
 

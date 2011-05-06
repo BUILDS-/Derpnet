@@ -1,4 +1,4 @@
-OB# This file is part of Derpnet.
+# This file is part of Derpnet.
 # 
 # Derpnet is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -20,8 +20,9 @@ FLAGS = -pthread
 derpnet : main.o
 	g++ -o derpnet $(FLAGS) main.o
 main.o : main.cpp sockserv/EchoConn.cpp sockserv/EchoConn.h \
-	sockserv/SockServ.cpp sockserv/SockServ.h
+	sockserv/SockServ.cpp sockserv/SockServ.h \
+	sockserv/Connection.cpp sockserv/Connection.h
 	g++ -c $(FLAGS) main.cpp
 clean :
-	rm -f main.o derpnet
-all : derpnet clean
+	find . -type f -name "*.o" -delete
+all : clean derpnet

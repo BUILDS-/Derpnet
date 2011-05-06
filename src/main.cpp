@@ -19,12 +19,20 @@
 
 #include <iostream>
 #include <stdio.h>
+#include <sys/socket.h>
 #include "sockserv/SockServ.cpp"
+#include "multicast/MultiServer.cpp"
 
+MultiServer m = MultiServer();
+void addConnection(int desc, SockServ* parent, struct sockaddr* client) {
+  Connection<MultiConn> newConn = Connection<MultiConn>(desc, parent,client);
+  m.addConnection(&newConn);
+  sleep(1);
+}
 //Basic echoserver code. Running on 24.63.226.212:6667 right now.
 int main(int argc, char *argv[]) {
-  SockServ srv;
-  srv = SockServ();
+  SockServ srv = SockServ();
+  srv.setCallBack((&addConnection));
   int port = 6667;
   //Get port number from argv[1]
   if(argc > 1) {

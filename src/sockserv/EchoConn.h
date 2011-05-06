@@ -19,20 +19,14 @@
 
 
 #include <pthread.h>
-#include <string>
 #include <stdlib.h>
 using namespace std;
 class EchoConn {
  public:
   EchoConn();
-  EchoConn(int sockd, SockServ* serv, struct sockaddr* client);
-  int Start();
-  void sendMsg(string mesg);
-  void RunLoop();
- protected:
-  static void *DoLoop(void * );
+  EchoConn(Connection<EchoConn>* c);
  private: 
-  int conn_desc;
-  SockServ* parent;
-  pthread_t thrd;
+  Connection<EchoConn>* connection;
+  void onReceive(const char*);
+  static void onReceiveStatic(const char*, void*);
 };

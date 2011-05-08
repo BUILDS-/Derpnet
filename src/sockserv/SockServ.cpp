@@ -98,7 +98,7 @@ bool SockServ::beginListen(int port, int conn_type) {
     } else {
       printf("Client descriptor: %d\n", client_desc);
       connections.push_back(client_desc);
-	  callBack(client_desc, this, (struct sockaddr* )&client);
+      callBack(client_desc, this, (struct sockaddr* )&client);
     }
   }
   return true;

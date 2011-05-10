@@ -17,13 +17,15 @@
  * Copyright (C) 2011 The Derpnet Team.
  */
 
-
+#define __CONNECTION_H
 #include <pthread.h>
 #include <string>
 #include <stdlib.h>
-
+#ifndef __SOCKSERV_H
+#include "SockServ.h"
+#endif
+#include <netinet/in.h>
 using namespace std;
-template<class T>
 class Connection {
  public:
   Connection();
@@ -31,8 +33,7 @@ class Connection {
   int Start();
   void sendMsg(const char* mesg);
   void RunLoop();
-  T* owner;
-  void setRecv(void (T::*)(const char*,Connection*));
+  void setRecv(void (*)(const char*,Connection*));
   void onRecv(const char*);
   int conn_desc;
   SockServ* parent;
@@ -42,5 +43,5 @@ class Connection {
   static void display(const char*);
   pthread_t thrd;
   bool hasRecvCallback;
-  void (T::*recvCallback)(const char*,Connection*);
+  void (*recvCallback)(const char*,Connection*);
 };

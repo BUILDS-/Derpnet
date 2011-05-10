@@ -27,14 +27,11 @@ MultiConn::MultiConn() {
   //i dunno wut
 }
 
-MultiConn::MultiConn(Connection<MultiConn>* c) {
-  this->connection_hold = Connection<MultiConn>(c->conn_desc,c->parent,0);
-  this->connection = &(this->connection_hold);
-  this->connection->setRecv(&MultiConn::onReceive);
-  this->connection->owner = this;
-  this->connection_hold.Start();
+MultiConn::MultiConn(Connection c) {
+  this->c = c;
+  this->c.Start();
 }
 
-void MultiConn::onReceive(const char* message,Connection<MultiConn>* c) {
-  c->sendMsg(message);
+void MultiConn::onReceive(const char* message) {
+  c.sendMsg(message);
 }

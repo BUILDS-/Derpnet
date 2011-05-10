@@ -19,8 +19,10 @@
 
 #define CONN_CLIENT 1
 #define CONN_CLIENTOTR 2
+#define __SOCKSERV_H
 #include <list>
 #include <string>
+#include <netinet/in.h>
 using namespace std;
 class SockServ
 {

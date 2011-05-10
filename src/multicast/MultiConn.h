@@ -17,18 +17,17 @@
  * Copyright (C) 2011 The Derpnet Team.
  */
 
-
+#define __MULTICONN_H
 #include <pthread.h>
 #include <stdlib.h>
+#include "ConnectionWrapper.h"
 
-using namespace std;
-class MultiConn {
+class MultiConn : public ConnectionWrapper{
  public:
   MultiConn();
-  MultiConn(Connection<MultiConn>*);
+  MultiConn(Connection);
  private: 
-  Connection<MultiConn>* connection;
-  Connection<MultiConn> connection_hold;
-  void onReceive(const char*,Connection<MultiConn>*);
+  Connection connection;
+  void onReceive(const char*);
   static void onReceiveStatic(const char*, void*);
 };

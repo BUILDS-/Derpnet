@@ -20,14 +20,14 @@
 #include <iostream>
 #include <stdio.h>
 #include <sys/socket.h>
-#include "sockserv/SockServ.cpp"
-#include "multicast/MultiServer.cpp"
+#include "sockserv/SockServ.h"
+#include "sockserv/Connection.h"
+#include "multicast/MultiServer.h"
 
 MultiServer m = MultiServer();
 void addConnection(int desc, SockServ* parent, struct sockaddr* client) {
-  Connection<MultiConn> newConn = Connection<MultiConn>(desc, parent,client);
-  m.addConnection(&newConn);
-  sleep(1);
+  Connection newConn = Connection(desc, parent,client);
+  m.addConnection(newConn);
 }
 //Basic echoserver code. Running on 24.63.226.212:6667 right now.
 int main(int argc, char *argv[]) {

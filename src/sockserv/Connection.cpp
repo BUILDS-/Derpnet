@@ -38,20 +38,17 @@ struct conn_info {
   SockServ* serv;
   sockaddr* client;
 };
-template<class T>
-Connection<T>::Connection() {
+Connection::Connection() {
   //i dunno wut
 }
-template<class T>
 
-Connection<T>::Connection(int sockd, SockServ* serv, struct sockaddr *client) {
+Connection::Connection(int sockd, SockServ* serv, struct sockaddr *client) {
   this->conn_desc = sockd;
   this->parent = serv;
   this->hasRecvCallback = false;
 }
 
-template<class T>
-void Connection<T>::RunLoop() {
+void Connection::RunLoop() {
   char buf[64];
   bzero(buf,64);
   int stat;
@@ -100,51 +97,42 @@ void Connection<T>::RunLoop() {
   }
 }
 
-template<class T>
-int Connection<T>::Start() {
+int Connection::Start() {
   //threading ;_;
-  int x =  pthread_create(&thrd, NULL, Connection<T>::DoLoop, (void *) this);
+  int x =  pthread_create(&thrd, NULL, Connection::DoLoop, (void *) this);
   sleep(1);
   return x;
 }
 
-template<class T>
-void Connection<T>::sendMsg(const char* msg) {
+void Connection::sendMsg(const char* msg) {
   char newMsg[strlen(msg)+1];
   int length = sprintf(newMsg,"%s\n",msg);
   send(conn_desc,newMsg,length,MSG_NOSIGNAL);
 }
 
-template<class T>
-void Connection<T>::display(const char* mesg) {
+void Connection::display(const char* mesg) {
     printf("%s\n",mesg);
 }
 
 //Static method for starting the actual loop after the thread has been split
-template<class T>
-void * Connection<T>::DoLoop(void* args) {
-  Connection<T>* c = (Connection<T>*)args;
-  Connection<T> c_real = Connection<T>(c->conn_desc,c->parent,0);
-  c_real.owner = c->owner;
-  c_real.setRecv(c->recvCallback);
+void * Connection::DoLoop(void* args) {
+  Connection* c = (Connection*)args;
   try {
-    c_real.RunLoop();
+    c->RunLoop();
   } catch (int e) {
     printf("ERROR\n");
     printf("ERROR: %d\n",e);
   }
 }
 
-template<class T>
-void Connection<T>::setRecv(void (T::* cb)(const char*,Connection<T>*)) {
+void Connection::setRecv(void (* cb)(const char*,Connection*)) {
   hasRecvCallback = true;
   recvCallback = cb;
 }
 
-template<class T>
-void Connection<T>::onRecv(const char * input) {
+void Connection::onRecv(const char * input) {
   if(hasRecvCallback) {
-    (owner->*recvCallback)(input,this);
+    recvCallback(input,this);
   }
 }
 /* vim: set expandtab sw=2: */

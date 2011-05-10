@@ -17,14 +17,21 @@
  * Copyright (C) 2011 The Derpnet Team.
  */
 
-
+#define __MULTISERVER_H
 #include <pthread.h>
 #include <stdlib.h>
-#include "MultiConn.cpp"
-using namespace std;
+#include <queue>
+#ifndef __CONNECTION_H
+#include <Connection.h>
+#endif
+#ifndef __MULTICONN_H
+#include "MultiConn.h"
+#endif
+using std::queue;
 class MultiServer {
  public:
   MultiServer();
-  void addConnection(Connection<MultiConn>*);
+  void addConnection(Connection);
  private: 
+  queue<MultiConn> conns;
 };

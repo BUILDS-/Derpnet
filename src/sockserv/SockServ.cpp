@@ -25,9 +25,10 @@
 #include <arpa/inet.h>
 #include <stdlib.h>
 #include "SockServ.h"
-#include "Connection.cpp"
+#include "Connection.h"
 #include <list>
 #include <string>
+#include <stdio.h>
 
 using namespace std;
 SockServ::SockServ() {

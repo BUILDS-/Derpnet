@@ -17,16 +17,18 @@
 * Copyright (C) 2011 The Derpnet Team.
 */
 
-#include "MultiServer.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include "MultiServer.h"
 using namespace std;
 
 MultiServer::MultiServer() {
   //i dunno wut
+	conns = queue<MultiConn>();
 }
 
-void MultiServer::addConnection(Connection<MultiConn>* connection) {
+void MultiServer::addConnection(Connection connection) {
   printf("Connection added\n");
   MultiConn mc = MultiConn(connection);
+  conns.push(mc);
 }

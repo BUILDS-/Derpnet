@@ -24,6 +24,7 @@
 #ifndef __SOCKSERV_H
 #include "SockServ.h"
 #endif
+class ConnectionWrapper;
 #include <netinet/in.h>
 using namespace std;
 class Connection {
@@ -37,6 +38,7 @@ class Connection {
   void onRecv(const char*);
   int conn_desc;
   SockServ* parent;
+  ConnectionWrapper* cw;
  protected:
   static void *DoLoop(void *);
  private: 

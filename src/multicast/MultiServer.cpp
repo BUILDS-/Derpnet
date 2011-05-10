@@ -24,11 +24,11 @@ using namespace std;
 
 MultiServer::MultiServer() {
   //i dunno wut
-	conns = queue<MultiConn>();
+	conns = queue<MultiConn*>();
 }
 
 void MultiServer::addConnection(Connection connection) {
-  printf("Connection added\n");
-  MultiConn mc = MultiConn(connection);
+  MultiConn* mc = new MultiConn(connection);
   conns.push(mc);
+  printf("Connection added\n");
 }

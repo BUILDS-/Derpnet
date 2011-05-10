@@ -15,7 +15,7 @@
 #
 # Copyright (C) 2011 The Derpnet Team.
 
-FLAGS = -I../sockserv
+FLAGS = -I../sockserv -I..
 OBJECTS = MultiServer.o MultiConn.o
 all: $(OBJECTS)
 $(OBJECTS): %.o : %.cpp

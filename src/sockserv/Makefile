@@ -15,7 +15,7 @@
 #
 # Copyright (C) 2011 The Derpnet Team.
 
-FLAGS = 
+FLAGS = -I.. 
 OBJECTS = SockServ.o Connection.o
 all: $(OBJECTS)
 $(OBJECTS): %.o : %.cpp

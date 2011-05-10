@@ -29,6 +29,7 @@ MultiConn::MultiConn() {
 
 MultiConn::MultiConn(Connection c) {
   this->c = c;
+  this->c.cw = this;
   this->c.Start();
 }
 

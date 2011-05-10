@@ -31,7 +31,7 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <string>
-
+#include <ConnectionWrapper.h>
 using namespace std;
 struct conn_info {
   int sockd;
@@ -100,7 +100,6 @@ void Connection::RunLoop() {
 int Connection::Start() {
   //threading ;_;
   int x =  pthread_create(&thrd, NULL, Connection::DoLoop, (void *) this);
-  sleep(1);
   return x;
 }
 
@@ -131,8 +130,6 @@ void Connection::setRecv(void (* cb)(const char*,Connection*)) {
 }
 
 void Connection::onRecv(const char * input) {
-  if(hasRecvCallback) {
-    recvCallback(input,this);
-  }
+  cw->onReceive(input);
 }
 /* vim: set expandtab sw=2: */

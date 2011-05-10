@@ -33,5 +33,5 @@ class MultiServer {
   MultiServer();
   void addConnection(Connection);
  private: 
-  queue<MultiConn> conns;
+  queue<MultiConn*> conns;
 };

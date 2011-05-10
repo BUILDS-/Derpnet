@@ -27,11 +27,16 @@
 #ifndef __MULTICONN_H
 #include "MultiConn.h"
 #endif
+#ifndef __SERVER_H
+#include <server.h>
+#endif
+
 using std::queue;
-class MultiServer {
+class MultiServer : Server{
  public:
   MultiServer();
   void addConnection(Connection);
+  void sendToAll(const char*);
  private: 
-  queue<MultiConn*> conns;
+  list<MultiConn*>* conns;
 };

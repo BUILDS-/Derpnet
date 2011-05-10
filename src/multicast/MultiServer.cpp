@@ -24,11 +24,21 @@ using namespace std;
 
 MultiServer::MultiServer() {
   //i dunno wut
-	conns = queue<MultiConn*>();
+  this->conns = new list<MultiConn*>();
 }
 
 void MultiServer::addConnection(Connection connection) {
-  MultiConn* mc = new MultiConn(connection);
-  conns.push(mc);
+  MultiConn* mc = new MultiConn(this, connection);
+  this->conns->push_back(mc);
   printf("Connection added\n");
+  printf("Length: %d\n",this->conns->size());
+}
+
+void MultiServer::sendToAll(const char* message) {
+  list<MultiConn*>::iterator it;
+  it = this->conns->begin();
+  for(it=conns->begin();it!=conns->end();it++) {
+	  (*it)->send(message);
+	 
+  }
 }

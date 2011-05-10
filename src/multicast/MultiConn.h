@@ -20,12 +20,14 @@
 #define __MULTICONN_H
 #include <pthread.h>
 #include <stdlib.h>
-#include "ConnectionWrapper.h"
+#include <ConnectionWrapper.h>
+class Server;
 
 class MultiConn : public ConnectionWrapper{
  public:
   MultiConn();
-  MultiConn(Connection);
+  MultiConn(Server*, Connection);
+  void send(const char*);
  private: 
   Connection connection;
   void onReceive(const char*);

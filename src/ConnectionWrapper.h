@@ -21,9 +21,14 @@
 #ifndef __CONNECTION_H
 #include <Connection.h>
 #endif
-
+class Server;
 class ConnectionWrapper {
 	public: 
+		ConnectionWrapper() {}
+		ConnectionWrapper(Server* p, Connection c) {
+			this->parent = p;
+		}
 		virtual void onReceive(const char*) = 0;
 		Connection c;
+		Server* parent;
 };

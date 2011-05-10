@@ -99,7 +99,7 @@ void Connection::RunLoop() {
 
 int Connection::Start() {
   //threading ;_;
-  int x =  pthread_create(&thrd, NULL, Connection::DoLoop, (void *) this);
+  int x = pthread_create(&thrd, NULL, Connection::DoLoop, (void *) this);
   return x;
 }
 

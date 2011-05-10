@@ -20,6 +20,12 @@
 #include "MultiConn.h"
 #include <stdio.h>
 #include <stdlib.h>
+#ifndef __SERVER_H
+#include <server.h>
+#endif
+#ifndef __MULTISERVER_H
+#include "MultiServer.h"
+#endif
 
 using namespace std;
 
@@ -27,12 +33,16 @@ MultiConn::MultiConn() {
   //i dunno wut
 }
 
-MultiConn::MultiConn(Connection c) {
+MultiConn::MultiConn(Server* p, Connection c) : ConnectionWrapper(p,c) {
   this->c = c;
   this->c.cw = this;
   this->c.Start();
 }
 
 void MultiConn::onReceive(const char* message) {
+  ((MultiServer*)this->parent)->sendToAll(message);
+}
+
+void MultiConn::send(const char* message) {
   c.sendMsg(message);
 }

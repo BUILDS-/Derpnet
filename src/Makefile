@@ -15,7 +15,7 @@
 #
 # Copyright (C) 2011 The Derpnet Team.
 
-FLAGS = -pthread -Isockserv -Imulticast
+FLAGS = -pthread -Isockserv -Imulticast -I.
 SUBDIRS = multicast sockserv
 .PHONY : subdirs $(SUBDIRS)
 .DEFAULT_GOAL := derpnet
@@ -31,7 +31,7 @@ derpnet : $(SUBDIRS) main.o
 
 clean :
 	find . -type f -name "*.o" -delete
-	rm derpnet
+	rm -f derpnet
 
 all : clean derpnet
 

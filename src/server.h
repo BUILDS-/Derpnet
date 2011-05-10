@@ -16,11 +16,14 @@
    *
    * Copyright (C) 2011 The Derpnet Team.
    */
-
+#define __SERVER_H
+#ifndef __CONNECTION_H
+#include <Connection.h>
+#endif
 class Server {
 	public :
 		virtual ~Server() {}
 		virtual void addConnection(Connection c) = 0;
 		//virtual void addSSLConnection(Connection c) = 0;
 	private :
-}
+};

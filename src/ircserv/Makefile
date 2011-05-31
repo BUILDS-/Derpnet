@@ -15,23 +15,8 @@
 #
 # Copyright (C) 2011 The Derpnet Team.
 
-FLAGS = -pthread -Isockserv -Imulticast -I.
-SUBDIRS = multicast sockserv ircserv
-.PHONY : subdirs $(SUBDIRS)
-.DEFAULT_GOAL := derpnet
-subdirs: $(SUBDIRS)
-$(SUBDIRS) :
-	$(MAKE) -C $@
-
-main.o : main.cpp 
-	g++ -c $(FLAGS) main.cpp
-
-derpnet : $(SUBDIRS) main.o
-	g++ -o derpnet $(FLAGS) main.o sockserv/*.o multicast/*.o ircserv/*.o
-
-clean :
-	find . -type f -name "*.o" -delete
-	rm -f derpnet
-
-all : clean derpnet
-
+FLAGS = -I../sockserv -I..
+OBJECTS = IrcServer.o IrcConn.o
+all: $(OBJECTS)
+$(OBJECTS): %.o : %.cpp
+	g++ $(FLAGS) -c $< -o $@

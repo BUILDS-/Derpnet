@@ -75,10 +75,10 @@ void Connection::RunLoop() {
       return;
     } else {
       msgbuf += string(buf).substr(0,stat);
-      llength = msgbuf.find('\n');
+      llength = msgbuf.find("\r\n");
       while(llength != -1) {
-        line = msgbuf.substr(0,llength+1);
-        msgbuf = msgbuf.substr(llength+1);
+        line = msgbuf.substr(0,llength);
+        msgbuf = msgbuf.substr(llength+2);
         try {
           onRecv(line.substr(0,llength).c_str());
         } catch(...) {
@@ -104,8 +104,8 @@ int Connection::Start() {
 }
 
 void Connection::sendMsg(const char* msg) {
-  char newMsg[strlen(msg)+1];
-  int length = sprintf(newMsg,"%s\n",msg);
+  char newMsg[strlen(msg)+2];
+  int length = sprintf(newMsg,"%s\r\n",msg);
   send(conn_desc,newMsg,length,MSG_NOSIGNAL);
 }
 

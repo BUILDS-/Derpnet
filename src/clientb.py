@@ -68,12 +68,16 @@ def runOut(screen, window, sock) :
       window.addstr(y,0,i)
       y+=1
     window.refresh()
-screen = initSc()
+import sys
+try :
+  screen = initSc()
+except : 
+  sys.exit(0)
+
 (HEIGHT,WIDTH) = screen.getmaxyx()
 linesWin = curses.newwin(HEIGHT-3,WIDTH,0,0)
 inputWin = curses.newwin(3,WIDTH,HEIGHT-3,0)
 
-import sys
 try :
   s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
   s.connect((sys.argv[1],int(sys.argv[2])))

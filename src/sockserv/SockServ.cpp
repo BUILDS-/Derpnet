@@ -32,7 +32,6 @@
 
 using namespace std;
 SockServ::SockServ() {
-  //TODO
   MAX_CONNECTIONS = 10;
   MAX_INC_CONNECTIONS = 5;
 }

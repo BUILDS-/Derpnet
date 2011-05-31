@@ -23,11 +23,12 @@
 #include "sockserv/SockServ.h"
 #include "sockserv/Connection.h"
 #include "multicast/MultiServer.h"
+#include "ircserv/IrcServer.h"
 
-MultiServer* m = new MultiServer();
+IrcServer* server = new IrcServer();
 void addConnection(int desc, SockServ* parent, struct sockaddr* client) {
   Connection newConn = Connection(desc, parent,client);
-  m->addConnection(newConn);
+  server->addConnection(newConn);
 }
 //Basic echoserver code. Running on 24.63.226.212:6667 right now.
 int main(int argc, char *argv[]) {

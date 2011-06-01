@@ -20,16 +20,66 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <algorithm>
+#include <iostream>
+#include <fstream>
+#include <string>
 #include "IrcServer.h"
 #define ALPHA_L "abcdefghijklmnopqrstuvwxyz"
 #define ALPHA_U "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 #define NUM "0123456789"
 #define SPECIAL "`_+=[]{}|<>"
+#define WHITESPACE " \r\t\n"
+#define IRCD_VERSION "0.0.1"
 using namespace std;
 
 IrcServer::IrcServer() {
   this->conns = new list<IrcConn*>();
+	readConfig("irc.conf");
 }
+
+bool IrcServer::readConfig(string filename) {
+	ifstream configFile(filename.c_str());
+	string currentLine;
+	int lineNo = 0;
+	if(configFile.is_open()) {
+		while(configFile.good()) {
+			getline(configFile,currentLine);
+			handleConfig(currentLine, lineNo++);
+		}
+	configFile.close();
+	} else {
+		printf("Error: Could not open configuration file %s\n", filename.c_str());
+		return false;
+	}
+	fullhost = servername + "." + hostname;
+	return true;
+}
+
+void IrcServer::handleConfig(string line, int lineNo) {
+	string key, setting;
+	if(line.size() == 0) {
+		return; //empty line
+	}
+	if(line.at(0) == '#') {
+		return; //Line is a comment
+	}
+	int equalsIndex = line.find('=');
+	if(equalsIndex == -1) { 
+		if(line.find_first_not_of(WHITESPACE) != -1) {
+			printf("Error in line %d of config: Expected '=' but none found. Proceeding anyway.\n",lineNo);
+		}
+	} else {
+		key = toLower(trim(line.substr(0,equalsIndex)));
+		setting = toLower(trim(line.substr(equalsIndex+1)));
+		//printf("Key %s = setting %s \n", key.c_str(), setting.c_str());
+		if(key.compare("hostname") == 0) 
+			this->hostname = setting;
+		if(key.compare("server") == 0)
+			this->servername = setting;
+		
+	}
+}
+
 
 void IrcServer::addConnection(Connection connection) {
   IrcConn* mc = new IrcConn(this, connection);
@@ -52,8 +102,11 @@ void IrcServer::handleLine(IrcConn* c, bool hasPrefix, string prefix, string com
 	   	if(nickLine(c, params->at(0))) {
 				c->isNicked = true;
 				if(c->isUsered) {
-					//send RPL_WELCOME
+					//send RPL_WELCOME etc.
 					welcome(c);
+					yourHost(c);
+					created(c);
+					myInfo(c);
 				}
 			}
 	  }
@@ -67,8 +120,11 @@ void IrcServer::handleLine(IrcConn* c, bool hasPrefix, string prefix, string com
 		  if(userLine(c,params->at(0), params->at(1), params->at(3))) {
 			  c->isUsered = true;
 			  if(c->isNicked) {
-				  //send RPL_WELCOME
+				  //send RPL_WELCOME etc.
 				  welcome(c);
+					yourHost(c);
+					created(c);
+					myInfo(c);
 			  }
 		  }
 	  }
@@ -114,8 +170,23 @@ void IrcServer::privmsgLine(IrcConn* sender, string targets, string message) {
 
 
 void IrcServer::welcome(IrcConn* c) {
-	//RPL_Welcome. 
-	c->sendCommand("serket.derpnet.oss","001",c->nick + " :Welcome to the Derpnet IRC Network " + c->nick + "!" + c->user + "@" + c->host);
+	//RPL_WELCOME 
+	c->sendCommand(fullhost,"001",c->nick + " :Welcome to the Derpnet IRC Network " + c->nick + "!" + c->user + "@" + c->host);
+}
+
+void IrcServer::yourHost(IrcConn* c) {
+	//RPL_YOURHOST.
+	c->sendCommand(fullhost,"002",c->nick + " :Your host is " + servername + ", running the Derpnet IRCD v" + IRCD_VERSION);
+}
+
+void IrcServer::created(IrcConn* c) {
+	//RPL_CREATED.
+	c->sendCommand(fullhost,"003",c->nick + " :This server was created at Three in the Morning (RJ'S I Can Barely Sleep In This Casino Remix), June 1st, 2011");
+}
+
+void IrcServer::myInfo(IrcConn* c) {
+	//RPL_MYINFO
+	c->sendCommand(fullhost,"004",c->nick + " :" + servername + " " + IRCD_VERSION + " +i +r");
 }
 
 bool validNickname(string nickname) {
@@ -146,5 +217,14 @@ string toLower(string input) {
 	string s = input.substr();
 	transform(s.begin(), s.end(), s.begin(), (int(*)(int)) tolower);
 	return s;
+}
+
+string trim(string input) {
+	int firstNonSpace = input.find_first_not_of(WHITESPACE);
+	int lastNonSpace = input.find_last_not_of(WHITESPACE);
+	if(lastNonSpace == -1) {
+		return string("");
+	}
+	return input.substr(firstNonSpace, lastNonSpace-firstNonSpace+1);
 }
 

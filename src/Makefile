@@ -26,12 +26,15 @@ $(SUBDIRS) :
 main.o : main.cpp 
 	g++ -c $(FLAGS) main.cpp
 
-derpnet : $(SUBDIRS) main.o
+derpnet : $(SUBDIRS) main.o config
 	g++ -o derpnet $(FLAGS) main.o sockserv/*.o multicast/*.o ircserv/*.o
 
 clean :
 	find . -type f -name "*.o" -delete
 	rm -f derpnet
+
+config :
+	./checkConfigFile.sh
 
 all : clean derpnet
 

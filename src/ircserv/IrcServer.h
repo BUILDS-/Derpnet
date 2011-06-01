@@ -39,12 +39,23 @@ class IrcServer : Server{
   void sendToAll(const char*);
   void handleLine(IrcConn*, bool, string, string, vector<string>*);
  private: 
+	string hostname, servername, fullhost;
+  list<IrcConn*>* conns;
+	IrcConn* getConnectionByNick(string);
+	bool readConfig(string);
+	void handleConfig(string,int);
+
+	//Line handling methods
   bool nickLine(IrcConn*, string);
   bool userLine(IrcConn*, string, string, string);
   void privmsgLine(IrcConn*, string, string);
+	
+	//RPL sending methods
   void welcome(IrcConn*);
-  list<IrcConn*>* conns;
-	IrcConn* getConnectionByNick(string);
+	void yourHost(IrcConn*);
+	void created(IrcConn*);
+	void myInfo(IrcConn*);
 };
 bool validNickname(string);
 string toLower(string);
+string trim(string);

@@ -46,6 +46,7 @@ IrcConn::IrcConn(IrcServer* p, Connection c) : ConnectionWrapper((Server*)p,c) {
   this->nick = "";
   this->user = "";
   this->host = "";
+	this->nick_lower = "";
 }
 
 void IrcConn::onReceive(const char* message) {
@@ -137,4 +138,8 @@ void IrcConn::sendCommand(string command, string params) {
 
 void IrcConn::sendCommand(string prefix, string command, string params) {
   send(":" + prefix + " " + command + " " + params);
+}
+
+string IrcConn::getTitle() { 
+	return nick + "!" + user + "@" + host;
 }

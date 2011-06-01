@@ -50,7 +50,7 @@ int main(int argc, char *argv[]) {
     return 1;
   } else {
 	printf("Problem!\n");
-    perror("Problem during listnening:\n");
+    perror("Problem during listening");
     return 0;
   }
  

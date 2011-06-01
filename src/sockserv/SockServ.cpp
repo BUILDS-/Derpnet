@@ -55,48 +55,47 @@ bool SockServ::beginListen(int port, int conn_type) {
 
   printf("Port: %d; Type: %d\n",port,conn_type);
 
-  printf("Getting socket\n"); //Allocates a socket and binds it to the requested port
+  printf("Getting socket...\t\t\t"); //Allocates a socket and binds it to the requested port
   listener = socket(AF_INET,SOCK_STREAM,0);
   if(listener == -1) {
-    printf("Socket acquire failed.\n");
+    printf("Failed.\n");
   } else {
-    printf("Succeded!\n");
+    printf("Succeeded.\n");
   }
-  printf("Descriptor: %d\n",listener);
+  printf("\tDescriptor = %d\n",listener);
 
-  printf("Binding socket\n");
+  printf("Binding socket...\t\t\t");
   if(bind(listener, (struct sockaddr *)&dest, sizeof dest) == -1) {
-    printf("Bind failed D:\n");
+    printf("Failed\n");
     return false;
   } else {
-    printf("Bind succeded :D\n");
+    printf("Succeeded\n");
   }
 
-  printf("Listening\n"); //Prepare the socket for getting incoming connections.
+  printf("Listening...\t\t\t\t"); //Prepare the socket for getting incoming connections.
   if(listen(listener,MAX_INC_CONNECTIONS*20) == -1) {
-    printf("Listen failed.\n");
-	return false;
+    printf("Failed.\n");
+		return false;
   } else {
-    printf("Listen succeeded!\n");
+    printf("Succeeded.\n");
   }
 
   socklen_t addr_sz = sizeof client;
   int client_desc;
   while(true) { 
-	printf("Waiting to accept an incoming connection...\n");
+		printf("Waiting for an incoming connection...");
 
     try {
-      printf("Accepting\n");
       client_desc = accept(listener,(struct sockaddr *)&client,&addr_sz);
       
-      printf("Accepted\n");
+      printf("Found.\n");
     } catch (int e) {
       printf("Error Accepting: %d\n",e);
     }
     if(client_desc == -1) {
-      printf("Accept failed!\n");
+      printf("\tAccept failed!\n");
     } else {
-      printf("Client descriptor: %d\n", client_desc);
+      printf("\tClient descriptor: %d\n", client_desc);
       connections.push_back(client_desc);
       callBack(client_desc, this, (struct sockaddr* )&client);
     }

@@ -37,7 +37,8 @@ class IrcConn : public ConnectionWrapper{
   void sendCommand(string, int, string);
   bool isServer;
   bool isNicked, isUsered;
-  string nick, user, host;
+  string nick, user, host, nick_lower;
+	string getTitle();
  private: 
   Connection connection;
   void onReceive(const char*);

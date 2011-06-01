@@ -38,10 +38,13 @@ class IrcServer : Server{
   void addConnection(Connection);
   void sendToAll(const char*);
   void handleLine(IrcConn*, bool, string, string, vector<string>*);
+ private: 
   bool nickLine(IrcConn*, string);
   bool userLine(IrcConn*, string, string, string);
-  void privmsgLine(IrcConn*, vector<string>, string);
+  void privmsgLine(IrcConn*, string, string);
   void welcome(IrcConn*);
- private: 
   list<IrcConn*>* conns;
+	IrcConn* getConnectionByNick(string);
 };
+bool validNickname(string);
+string toLower(string);

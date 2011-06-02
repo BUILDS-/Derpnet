@@ -30,19 +30,19 @@
 using namespace std;
 
 MultiConn::MultiConn() {
-  //i dunno wut
+	//i dunno wut
 }
 
 MultiConn::MultiConn(Server* p, Connection c) : ConnectionWrapper(p,c) {
-  this->c = c;
-  this->c.cw = this;
-  this->c.Start();
+	this->c = c;
+	this->c.cw = this;
+	this->c.Start();
 }
 
 void MultiConn::onReceive(const char* message) {
-  ((MultiServer*)this->parent)->sendToAll(message);
+	((MultiServer*)this->parent)->sendToAll(message);
 }
 
 void MultiConn::send(const char* message) {
-  c.sendMsg(message);
+	c.sendMsg(message);
 }

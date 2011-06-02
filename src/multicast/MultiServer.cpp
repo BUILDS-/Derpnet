@@ -23,22 +23,22 @@
 using namespace std;
 
 MultiServer::MultiServer() {
-  //i dunno wut
-  this->conns = new list<MultiConn*>();
+	//i dunno wut
+	this->conns = new list<MultiConn*>();
 }
 
 void MultiServer::addConnection(Connection connection) {
-  MultiConn* mc = new MultiConn(this, connection);
-  this->conns->push_back(mc);
-  printf("Connection added\n");
-  printf("Length: %d\n",this->conns->size());
+	MultiConn* mc = new MultiConn(this, connection);
+	this->conns->push_back(mc);
+	printf("Connection added\n");
+	printf("Length: %d\n",this->conns->size());
 }
 
 void MultiServer::sendToAll(const char* message) {
-  list<MultiConn*>::iterator it;
-  it = this->conns->begin();
-  for(it=conns->begin();it!=conns->end();it++) {
-	  (*it)->send(message);
+	list<MultiConn*>::iterator it;
+	it = this->conns->begin();
+	for(it=conns->begin();it!=conns->end();it++) {
+		(*it)->send(message);
 	 
-  }
+	}
 }

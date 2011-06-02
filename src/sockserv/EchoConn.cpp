@@ -24,19 +24,19 @@
 using namespace std;
 
 EchoConn::EchoConn() {
-  //i dunno wut
+	//i dunno wut
 }
 
 EchoConn::EchoConn(Connection<EchoConn>* c) {
-  this->connection = c;
-  this->connection->setRecv(&EchoConn::onReceive);
-  this->connection->owner = this;
+	this->connection = c;
+	this->connection->setRecv(&EchoConn::onReceive);
+	this->connection->owner = this;
 }
 
 void EchoConn::onReceiveStatic(const char* message, void* me) {
-  ((EchoConn *)me)->onReceive(message);
+	((EchoConn *)me)->onReceive(message);
 }
 
 void EchoConn::onReceive(const char* message) {
-  this->connection->sendMsg(message);
+	this->connection->sendMsg(message);
 }

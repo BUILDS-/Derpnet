@@ -36,109 +36,109 @@
 
 using namespace std;
 struct conn_info {
-  int sockd;
-  SockServ* serv;
-  sockaddr* client;
+	int sockd;
+	SockServ* serv;
+	sockaddr* client;
 };
 Connection::Connection() {
-  //i dunno wut
+	//i dunno wut
 }
 
 Connection::Connection(int sockd, SockServ* serv, struct sockaddr *client) {
-  this->conn_desc = sockd;
-  this->parent = serv;
-  this->hasRecvCallback = false;
-  this->client = client;
-  char host[NI_MAXHOST];
-  char server[NI_MAXSERV];
-  sockaddr_in sin;
-  int err = getnameinfo(client, sizeof sin, host, NI_MAXHOST, server, NI_MAXSERV,0);
-  this->host = string(host);
-  printf("Host is %s\n",host);
+	this->conn_desc = sockd;
+	this->parent = serv;
+	this->hasRecvCallback = false;
+	this->client = client;
+	char host[NI_MAXHOST];
+	char server[NI_MAXSERV];
+	sockaddr_in sin;
+	int err = getnameinfo(client, sizeof sin, host, NI_MAXHOST, server, NI_MAXSERV,0);
+	this->host = string(host);
+	printf("Host is %s\n",host);
 }
 
 void Connection::RunLoop() {
-  char buf[64];
-  bzero(buf,64);
-  int stat;
-  string msgbuf(""), line("");
-  int llength;
-  while(true) {
-    //read bytes from socket. If the message so far has a newline, send it up to the newline.
-    stat = read(this->conn_desc,buf,63);
-    if(stat == -1) {
-      try {
-      } catch(...) {
-      }
-      printf("Exploding\n");
-      parent->connections.remove(conn_desc);
-      pthread_exit(NULL);
-      return;
-    } else if (stat == 0) {
-      try {
-      } catch(...) {
-      }
-      printf("Dying\n");
-      parent->connections.remove(conn_desc);
-      pthread_exit(NULL);
-      return;
-    } else {
-      msgbuf += string(buf).substr(0,stat);
-      llength = msgbuf.find("\r\n");
-      while(llength != -1) {
-        line = msgbuf.substr(0,llength);
-        msgbuf = msgbuf.substr(llength+2);
-        try {
-          onRecv(line.substr(0,llength).c_str());
-        } catch(...) {
-          printf("ERROR!\n");
-        }
-        if(line.compare("EXIT\n") == 0) {
-          printf("Client connection %d requested close. Complying.\n", conn_desc);
-          close(conn_desc);
-          parent->connections.remove(conn_desc);
-          pthread_exit(NULL);
-          return;
-        }
-        llength = msgbuf.find('\n');
-      }
-    }
-  }
+	char buf[64];
+	bzero(buf,64);
+	int stat;
+	string msgbuf(""), line("");
+	int llength;
+	while(true) {
+		//read bytes from socket. If the message so far has a newline, send it up to the newline.
+		stat = read(this->conn_desc,buf,63);
+		if(stat == -1) {
+			try {
+			} catch(...) {
+			}
+			printf("Exploding\n");
+			parent->connections.remove(conn_desc);
+			pthread_exit(NULL);
+			return;
+		} else if (stat == 0) {
+			try {
+			} catch(...) {
+			}
+			printf("Dying\n");
+			parent->connections.remove(conn_desc);
+			pthread_exit(NULL);
+			return;
+		} else {
+			msgbuf += string(buf).substr(0,stat);
+			llength = msgbuf.find("\r\n");
+			while(llength != -1) {
+				line = msgbuf.substr(0,llength);
+				msgbuf = msgbuf.substr(llength+2);
+				try {
+					onRecv(line.substr(0,llength).c_str());
+				} catch(...) {
+					printf("ERROR!\n");
+				}
+				if(line.compare("EXIT\n") == 0) {
+					printf("Client connection %d requested close. Complying.\n", conn_desc);
+					close(conn_desc);
+					parent->connections.remove(conn_desc);
+					pthread_exit(NULL);
+					return;
+				}
+				llength = msgbuf.find('\n');
+			}
+		}
+	}
 }
 
 int Connection::Start() {
-  //threading ;_;
-  int x = pthread_create(&thrd, NULL, Connection::DoLoop, (void *) this);
-  return x;
+	//threading ;_;
+	int x = pthread_create(&thrd, NULL, Connection::DoLoop, (void *) this);
+	return x;
 }
 
 void Connection::sendMsg(const char* msg) {
-  char newMsg[strlen(msg)+2];
-  int length = sprintf(newMsg,"%s\r\n",msg);
-  send(conn_desc,newMsg,length,MSG_NOSIGNAL);
+	char newMsg[strlen(msg)+2];
+	int length = sprintf(newMsg,"%s\r\n",msg);
+	send(conn_desc,newMsg,length,MSG_NOSIGNAL);
 }
 
 void Connection::display(const char* mesg) {
-    printf("%s\n",mesg);
+		printf("%s\n",mesg);
 }
 
 //Static method for starting the actual loop after the thread has been split
 void * Connection::DoLoop(void* args) {
-  Connection* c = (Connection*)args;
-  try {
-    c->RunLoop();
-  } catch (int e) {
-    printf("ERROR\n");
-    printf("ERROR: %d\n",e);
-  }
+	Connection* c = (Connection*)args;
+	try {
+		c->RunLoop();
+	} catch (int e) {
+		printf("ERROR\n");
+		printf("ERROR: %d\n",e);
+	}
 }
 
 void Connection::setRecv(void (* cb)(const char*,Connection*)) {
-  hasRecvCallback = true;
-  recvCallback = cb;
+	hasRecvCallback = true;
+	recvCallback = cb;
 }
 
 void Connection::onRecv(const char * input) {
-  cw->onReceive(input);
+	cw->onReceive(input);
 }
 /* vim: set expandtab sw=2: */

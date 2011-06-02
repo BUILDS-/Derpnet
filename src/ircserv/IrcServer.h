@@ -31,6 +31,7 @@
 #include <server.h>
 #endif
 
+class Channel;
 using std::queue;
 class IrcServer : Server{
  public:
@@ -41,7 +42,10 @@ class IrcServer : Server{
  private: 
 	string hostname, servername, fullhost;
   list<IrcConn*>* conns;
+	list<User*>* users;
+	list<Channel*>* chans;
 	IrcConn* getConnectionByNick(string);
+	void addUserFromConn(IrcConn*);
 	bool readConfig(string);
 	void handleConfig(string,int);
 	void numericLine(IrcConn*, int, string);
@@ -63,6 +67,9 @@ class IrcServer : Server{
 	void created(IrcConn*);
 	void myInfo(IrcConn*);
 	void iSupport(IrcConn*);
+	void away(IrcConn*, User*);
+	void notAway(IrcConn*);
+	void nowAway(IrcConn*);
 	void luserClient(IrcConn*);
 	void luserOp(IrcConn*);
 	void luserChan(IrcConn*);

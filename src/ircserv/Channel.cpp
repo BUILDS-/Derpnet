@@ -35,3 +35,4 @@ Channel::Channel(string name) {
 	this->users = new list<User*>();
 	this->modes = new list<chan_mode>();
 }
+// vim:ts=4:sw=4

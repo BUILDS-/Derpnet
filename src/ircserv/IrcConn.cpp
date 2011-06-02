@@ -28,6 +28,9 @@
 #ifndef __IRCSERVER_H
 #include "IrcServer.h"
 #endif
+#ifndef __USER_H
+#include "User.h"
+#endif
 
 using namespace std;
 
@@ -142,4 +145,12 @@ void IrcConn::sendCommand(string prefix, string command, string params) {
 
 string IrcConn::getTitle() { 
 	return nick + "!" + user + "@" + host;
+}
+
+User* IrcConn::getUser() { 
+	return owner;
+}
+
+void IrcConn::setUser(User* u) { 
+	this->owner = u;
 }

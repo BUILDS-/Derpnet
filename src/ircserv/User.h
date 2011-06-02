@@ -31,5 +31,6 @@ class User {
 		string hostname;
 		bool local;
 		IrcConn* connection;
+		string nick, awayMsg;
 };
 	

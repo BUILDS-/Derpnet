@@ -25,6 +25,9 @@
 #include <string>
 #include <math.h>
 #include "IrcServer.h"
+#ifndef __USER_H
+#include "User.h"
+#endif
 #define ALPHA_L "abcdefghijklmnopqrstuvwxyz"
 #define ALPHA_U "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 #define NUM "0123456789"
@@ -35,6 +38,8 @@ using namespace std;
 
 IrcServer::IrcServer() {
   this->conns = new list<IrcConn*>();
+	this->users = new list<User*>();
+	this->chans = new list<Channel*>();
 	readConfig("irc.conf");
 }
 
@@ -237,7 +242,10 @@ void IrcServer::initial(IrcConn* c) {
 	myInfo(c); //RPL_MYINFO
 	iSupport(c); //RPL_ISUPPORT
 	luserClient(c); //RPL_LUSERCLIENT
-	//luserOp(c); //RPL_LUSEROP
+	luserOp(c); //RPL_LUSEROP
+	luserChan(c); //RPL_LUSERCHANNELS
+	luserMe(c); //RPL_LUSERME
+	addUserFromConn(c);
 }
 
 
@@ -250,6 +258,12 @@ IrcConn* IrcServer::getConnectionByNick(string nickname) {
 		}
 	}
 	return connection;
+}
+
+void IrcServer::addUserFromConn(IrcConn* c) {
+	User* u = new User(c);
+	c->setUser(u);
+	users->push_back(u);
 }
 
 void IrcServer::numericLine(IrcConn* c, int code, string message) {
@@ -296,14 +310,39 @@ void IrcServer::iSupport(IrcConn* c) {
 	numericLine(c,5,supports);
 }
 
+void IrcServer::away(IrcConn* c, User* attempted) { 
+	//RPL_AWAY
+	numericLiteral(c,301,attempted->nick + " :" + attempted->awayMsg);
+}
+
+void IrcServer::notAway(IrcConn* c) {
+	//RPL_UNAWAY
+	numericLine(c,305,"You are no longer marked as being away");
+}
+
+void IrcServer::nowAway(IrcConn* c) {
+	//RPL_NOWAWAY
+	numericLine(c,306,"You have been marked as being away");
+}
+
 void IrcServer::luserClient(IrcConn* c) {
 	//RPL_LUSERCLIENT
-	numericLine(c,251,"There are " + toString(conns->size()) + " users and " + toString(0) + " services on " + toString(1) + " servers");
+	numericLine(c,251,"There are " + toString(users->size()) + " users and " + toString(0) + " services on " + toString(1) + " servers");
 }
 
 void IrcServer::luserOp(IrcConn* c) {
 	//RPL_LUSEROP
 	numericLiteral(c,252,toString(0) + " :operator(s) online");
+}
+
+void IrcServer::luserChan(IrcConn* c) {
+	//RPL_LUSERCHANNELS
+	numericLiteral(c,253,toString(chans->size()) + " :channels formed");
+}
+
+void IrcServer::luserMe(IrcConn* c) { 
+	//RPL_LUSERME
+	numericLine(c,254,"I have " + toString(conns->size()) + " clients and " + toString(0) + " servers");
 }
 
 void IrcServer::noNickGiven(IrcConn* c) {

@@ -25,6 +25,7 @@
 #endif
 class Server;
 class IrcServer;
+class User;
 class IrcConn : public ConnectionWrapper{
  public:
   IrcConn();
@@ -35,6 +36,8 @@ class IrcConn : public ConnectionWrapper{
   void sendCommand(string, string, string);
   void sendCommand(int, string);
   void sendCommand(string, int, string);
+	User* getUser();
+	void setUser(User*);
   bool isServer;
   bool isNicked, isUsered, isReady;
   string nick, user, host, nick_lower;
@@ -44,4 +47,5 @@ class IrcConn : public ConnectionWrapper{
   void onReceive(const char*);
   static void onReceiveStatic(const char*, void*);
   IrcServer* parent;
+	User* owner;
 };

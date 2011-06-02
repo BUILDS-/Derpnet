@@ -33,5 +33,7 @@ User::User(IrcConn*c ) {
 		this->local = false;
 	} else {
 		this->local = true;
+		this->nick = c->nick;
 	}
+	this->awayMsg = string("");
 }

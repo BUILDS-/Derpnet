@@ -39,6 +39,7 @@ class Connection {
   int conn_desc;
   SockServ* parent;
   ConnectionWrapper* cw;
+	string host;
  protected:
   static void *DoLoop(void *);
  private: 
@@ -46,4 +47,5 @@ class Connection {
   pthread_t thrd;
   bool hasRecvCallback;
   void (*recvCallback)(const char*,Connection*);
+	sockaddr* client;
 };

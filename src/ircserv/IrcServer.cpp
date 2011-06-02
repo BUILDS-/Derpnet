@@ -23,13 +23,14 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <math.h>
 #include "IrcServer.h"
 #define ALPHA_L "abcdefghijklmnopqrstuvwxyz"
 #define ALPHA_U "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 #define NUM "0123456789"
 #define SPECIAL "`_+=[]{}|<>"
 #define WHITESPACE " \r\t\n"
-#define IRCD_VERSION "0.0.1"
+#define IRCD_VERSION "Derpnet0.0.1"
 using namespace std;
 
 IrcServer::IrcServer() {
@@ -83,7 +84,6 @@ void IrcServer::handleConfig(string line, int lineNo) {
 
 void IrcServer::addConnection(Connection connection) {
   IrcConn* mc = new IrcConn(this, connection);
-  mc->host = "unknown-host"; // :33
   this->conns->push_back(mc);
   printf("Connection added\n");
 }
@@ -94,99 +94,258 @@ void IrcServer::handleLine(IrcConn* c, bool hasPrefix, string prefix, string com
 
 	command = toLower(command);
 
+	bool commandRecognized = false;
+
   if(command.compare(string("nick")) == 0) { 
 	  //RFC: NICK <nick>
-	  if(params->size() < 1) {
-		  //ERR_NONICKNAMEGIVEN
-	  } else {
-	   	if(nickLine(c, params->at(0))) {
-				c->isNicked = true;
-				if(c->isUsered) {
-					//send RPL_WELCOME etc.
-					welcome(c);
-					yourHost(c);
-					created(c);
-					myInfo(c);
-				}
-			}
-	  }
+		commandRecognized = true;
+		nickLine(c, params);
   }
 
   if(command.compare(string("user")) == 0) {
 	  //RFC: USER <uname> <mode> <unused> <rname>
-	  if(params->size() < 4) { 
-		  //ERR_NEEDMOREPARAMS
-	  } else {
-		  if(userLine(c,params->at(0), params->at(1), params->at(3))) {
-			  c->isUsered = true;
-			  if(c->isNicked) {
-				  //send RPL_WELCOME etc.
-				  welcome(c);
-					yourHost(c);
-					created(c);
-					myInfo(c);
-			  }
-		  }
-	  }
+		commandRecognized = true;
+		userLine(c, params);
   } 
 
 	if(command.compare(string("privmsg")) == 0) {
 		//RFC: PRIVMSG <targets> <message>
-		if(params->size() < 2) {
-			//ERR_NOTEXTTOSEND
-		} else {
-			privmsgLine(c,params->at(0), params->at(1));
-		}
+		commandRecognized = true;
+		privmsgLine(c, params);
+	}
+
+	if(command.compare(string("mode")) == 0) {
+		//RFC: MODE <nick> <mode>
+		commandRecognized = true;
+		modeLine(c, params);
+	}
+
+	if(command.compare(string("ping")) == 0) {
+		//RFC: PING
+		commandRecognized = true;
+		pingLine(c, params);
+	}
+
+	if(command.compare(string("quit")) == 0) {
+		//RFC: QUIT
+		commandRecognized = true;
+		quitLine(c, params);
+	}
+
+	if(!commandRecognized) {
+		//Unrecognized command!
+		printf("Can't interpret line with command %s\n",command.c_str());
 	}
 }
 	
 
-bool IrcServer::nickLine(IrcConn* c, string nick) {
+void IrcServer::nickLine(IrcConn* c, vector<string>* params) {
 	//NICK line. Params = <nick>
-	c->nick = nick;
-	c->nick_lower = toLower(nick);
-	return true;
-}
-
-bool IrcServer::userLine(IrcConn* c, string uname, string mode, string realname) {
-	//USER line. Params = <user> <mode> <unused> <realname>
-	c->user = uname;
-	return true;
-
-}
-
-void IrcServer::privmsgLine(IrcConn* sender, string targets, string message) {
-	//PRIVMSG line. Params = <target> <message>
-	if(validNickname(targets)) { 
-		IrcConn* target = getConnectionByNick(targets);
-		if(target == NULL) {
-			//ERR_NOSUCHNICK
+  if(params->size() < 1) {
+	  noNickGiven(c); //ERR_NONICKNAMEGIVEN
+  } else {
+		string nick = params->at(0);
+		if(validNickname(nick)) {
+			c->nick = nick;
+			c->nick_lower = toLower(nick);
+			c->isNicked = true;
+			if(c->isUsered) {
+				initial(c);
+				c->isReady = true;
+			}
 		} else {
-			target->sendCommand(sender->getTitle(), "PRIVMSG", target->nick + " :" + message);
+			errNick(c,nick);
+		}
+  }
+}
+
+void IrcServer::userLine(IrcConn* c, vector<string>* params) {
+	//USER line. Params = <user> <mode> <unused> <realname>
+  if(params->size() < 4) { 
+	  //ERR_NEEDMOREPARAMS
+  } else {
+		string uname = params->at(0);
+		c->user = uname;
+		c->isUsered = true;
+	  if(c->isNicked) {
+			initial(c);
+			c->isReady = true;
 		}
 	}
 }
 
+void IrcServer::privmsgLine(IrcConn* c, vector<string>* params) {
+	//PRIVMSG line. Params = <target> <message>
+	if(params->size() < 2) { 
+		//ERR_RECIPIENT
+	} else if(params->size() < 2) {
+		//ERR_NOTEXTTOSEND
+	} else {
+		string targets = params->at(0);
+		string message = params->at(1);
+		if(validNickname(targets)) {
+			IrcConn* target = getConnectionByNick(targets);
+			if(target == NULL) {
+				//ERR_NOSUCHNICK
+			} else {
+				target->sendCommand(c->getTitle(), "PRIVMSG", target->nick + " :" + message);
+			}
+		}
+	}
+}
 
+void IrcServer::modeLine(IrcConn* c, vector<string>* params) {
+	if(params->size() < 1) {
+		//ERR_NEEDMOREPARAMS
+	} else {
+		if(toLower(params->at(0)).compare(c->nick_lower) != 0) {
+			//ERR_USERSDONTMATCH
+		} else {
+			if(params->size() < 2 ) {
+				//RPL_UMODEIS
+			} else {
+				//Set modes.
+			}
+		}
+	}
+}
+
+void IrcServer::pingLine(IrcConn* c, vector<string>* params) {
+	if(params->size() < 1) {
+		//ERR_NOORIGIN
+	} else if(params->size() == 1) {
+		if(toLower(params->at(0)).compare(toLower(fullhost)) == 0) {
+			c->sendCommand(fullhost, "PONG", ":" + fullhost);
+		}
+	} else {
+	}
+}
+
+void IrcServer::quitLine(IrcConn* c, vector<string>* params) {
+	if(params->size() == 1) {
+		//QUIT them with a message
+	} else {
+		//QUIT them without one
+	}
+}
+
+
+void IrcServer::initial(IrcConn* c) {
+	welcome(c); //RPL_WELCOME
+	yourHost(c); //RPL_YOURHOST
+	created(c); //RPL_CREATED
+	myInfo(c); //RPL_MYINFO
+	iSupport(c); //RPL_ISUPPORT
+	luserClient(c); //RPL_LUSERCLIENT
+	//luserOp(c); //RPL_LUSEROP
+}
+
+
+IrcConn* IrcServer::getConnectionByNick(string nickname) {
+	IrcConn* connection = NULL;
+	nickname = toLower(nickname);
+	for(list<IrcConn*>::iterator it=conns->begin();it!=conns->end();it++) {
+		if(((*it)->nick_lower.compare(nickname)) == 0) {
+			connection = (*it);
+		}
+	}
+	return connection;
+}
+
+void IrcServer::numericLine(IrcConn* c, int code, string message) {
+	char codeS[3];
+	sprintf(codeS,"%03d",code);
+	c->sendCommand(fullhost,codeS,c->nick + " :" + message);
+}
+
+void IrcServer::numericLiteral(IrcConn* c, int code, string message) {
+	char codeS[3];
+	sprintf(codeS,"%03d",code);
+	c->sendCommand(fullhost,codeS,c->nick + " " + message);
+}
 
 void IrcServer::welcome(IrcConn* c) {
 	//RPL_WELCOME 
-	c->sendCommand(fullhost,"001",c->nick + " :Welcome to the Derpnet IRC Network " + c->nick + "!" + c->user + "@" + c->host);
+	numericLine(c,1,"Welcome to the Derpnet IRC Network " + c->nick + "!" + c->user + "@" + c->host);
 }
 
 void IrcServer::yourHost(IrcConn* c) {
 	//RPL_YOURHOST.
-	c->sendCommand(fullhost,"002",c->nick + " :Your host is " + servername + ", running the Derpnet IRCD v" + IRCD_VERSION);
+	numericLine(c,2,"Your host is " + servername + ", running version " + IRCD_VERSION);
 }
 
 void IrcServer::created(IrcConn* c) {
 	//RPL_CREATED.
-	c->sendCommand(fullhost,"003",c->nick + " :This server was created at Three in the Morning (RJ'S I Can Barely Sleep In This Casino Remix), June 1st, 2011");
+	numericLine(c,3,"This server was created at Three in the Morning (RJ'S I Can Barely Sleep In This Casino Remix), June 1st, 2011");
 }
 
 void IrcServer::myInfo(IrcConn* c) {
 	//RPL_MYINFO
-	c->sendCommand(fullhost,"004",c->nick + " :" + servername + " " + IRCD_VERSION + " +i +r");
+	numericLine(c,4,fullhost + " " + IRCD_VERSION + " i r");
+}
+
+void IrcServer::iSupport(IrcConn* c) {
+	string supports("");
+	supports += "PREFIX=(hov)%@+ ";
+	supports += "NICKLEN=30 ";
+	supports += "CHANTYPES=# ";
+	supports += "TOPICLEN=300 ";
+	supports += "CHANLIMIT=30 ";
+
+	supports += "are supported by this server";
+	numericLine(c,5,supports);
+}
+
+void IrcServer::luserClient(IrcConn* c) {
+	//RPL_LUSERCLIENT
+	numericLine(c,251,"There are " + toString(conns->size()) + " users and " + toString(0) + " services on " + toString(1) + " servers");
+}
+
+void IrcServer::luserOp(IrcConn* c) {
+	//RPL_LUSEROP
+	numericLiteral(c,252,toString(0) + " :operator(s) online");
+}
+
+void IrcServer::noNickGiven(IrcConn* c) {
+	//ERR_NONICKNAMEGIVEN
+	numericLine(c,431,"No nickname given");
+}
+
+void IrcServer::errNick(IrcConn* c,string nick) {
+	//ERR_ERRONEOUSNICKNAME
+	c->sendCommand(fullhost,"432",nick + " :Erroneous nickname");
+}
+
+void IrcServer::nickUsed(IrcConn* c, string nick) {
+	//ERR_NICKNAMEINUSE
+	c->sendCommand(fullhost,"433",nick + " :Nickname is already in use.");
+}
+
+string toLower(string input) {
+	string s = input.substr();
+	transform(s.begin(), s.end(), s.begin(), (int(*)(int)) tolower);
+	return s;
+}
+
+string toString(int num) {
+	if(num == 0 ) {
+		return "0";
+	}
+	if(num < 0) { 
+		return "-" + toString(-num);
+	}
+  char numS[2+(int)(log(num)/log(10))];
+	sprintf(numS,"%d",num);
+	return string(numS);
+}
+
+string trim(string input) {
+	int firstNonSpace = input.find_first_not_of(WHITESPACE);
+	int lastNonSpace = input.find_last_not_of(WHITESPACE);
+	if(lastNonSpace == -1) {
+		return string("");
+	}
+	return input.substr(firstNonSpace, lastNonSpace-firstNonSpace+1);
 }
 
 bool validNickname(string nickname) {
@@ -202,29 +361,4 @@ bool validNickname(string nickname) {
 	return true;
 }
 
-IrcConn* IrcServer::getConnectionByNick(string nickname) {
-	IrcConn* connection = NULL;
-	nickname = toLower(nickname);
-	for(list<IrcConn*>::iterator it=conns->begin();it!=conns->end();it++) {
-		if(((*it)->nick_lower.compare(nickname)) == 0) {
-			connection = (*it);
-		}
-	}
-	return connection;
-}
-
-string toLower(string input) {
-	string s = input.substr();
-	transform(s.begin(), s.end(), s.begin(), (int(*)(int)) tolower);
-	return s;
-}
-
-string trim(string input) {
-	int firstNonSpace = input.find_first_not_of(WHITESPACE);
-	int lastNonSpace = input.find_last_not_of(WHITESPACE);
-	if(lastNonSpace == -1) {
-		return string("");
-	}
-	return input.substr(firstNonSpace, lastNonSpace-firstNonSpace+1);
-}
 

@@ -44,18 +44,39 @@ class IrcServer : Server{
 	IrcConn* getConnectionByNick(string);
 	bool readConfig(string);
 	void handleConfig(string,int);
+	void numericLine(IrcConn*, int, string);
+	void numericLiteral(IrcConn*, int, string);
 
 	//Line handling methods
-  bool nickLine(IrcConn*, string);
-  bool userLine(IrcConn*, string, string, string);
-  void privmsgLine(IrcConn*, string, string);
+  void nickLine(IrcConn*, vector<string>*);
+  void userLine(IrcConn*, vector<string>*);
+  void privmsgLine(IrcConn*, vector<string>*);
+	void modeLine(IrcConn*, vector<string>*);
+	void pingLine(IrcConn*, vector<string>*);
+	void quitLine(IrcConn*, vector<string>*);
 	
+	void initial(IrcConn*);
+
 	//RPL sending methods
   void welcome(IrcConn*);
 	void yourHost(IrcConn*);
 	void created(IrcConn*);
 	void myInfo(IrcConn*);
+	void iSupport(IrcConn*);
+	void luserClient(IrcConn*);
+	void luserOp(IrcConn*);
+	void luserChan(IrcConn*);
+	void luserMe(IrcConn*);
+
+	//ERR sending methods
+	void noNickGiven(IrcConn*);
+	void errNick(IrcConn*, string);
+	void nickUsed(IrcConn*, string);
+	void unavailRes(IrcConn*);
+	void errRestricted(IrcConn*);
+
 };
 bool validNickname(string);
 string toLower(string);
+string toString(int);
 string trim(string);

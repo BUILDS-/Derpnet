@@ -16,7 +16,7 @@
 # Copyright (C) 2011 The Derpnet Team.
 
 FLAGS = -I../sockserv -I..
-OBJECTS = IrcServer.o IrcConn.o
+OBJECTS = IrcServer.o IrcConn.o User.o Channel.o
 all: $(OBJECTS)
 $(OBJECTS): %.o : %.cpp
 	g++ $(FLAGS) -c $< -o $@

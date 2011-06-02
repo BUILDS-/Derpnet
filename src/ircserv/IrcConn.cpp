@@ -45,7 +45,7 @@ IrcConn::IrcConn(IrcServer* p, Connection c) : ConnectionWrapper((Server*)p,c) {
   this->isUsered = false;
   this->nick = "";
   this->user = "";
-  this->host = "";
+  this->host = c.host;
 	this->nick_lower = "";
 }
 

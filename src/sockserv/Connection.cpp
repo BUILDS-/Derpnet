@@ -32,6 +32,8 @@
 #include <arpa/inet.h>
 #include <string>
 #include <ConnectionWrapper.h>
+#include <netdb.h>
+
 using namespace std;
 struct conn_info {
   int sockd;
@@ -46,6 +48,13 @@ Connection::Connection(int sockd, SockServ* serv, struct sockaddr *client) {
   this->conn_desc = sockd;
   this->parent = serv;
   this->hasRecvCallback = false;
+  this->client = client;
+  char host[NI_MAXHOST];
+  char server[NI_MAXSERV];
+  sockaddr_in sin;
+  int err = getnameinfo(client, sizeof sin, host, NI_MAXHOST, server, NI_MAXSERV,0);
+  this->host = string(host);
+  printf("Host is %s\n",host);
 }
 
 void Connection::RunLoop() {

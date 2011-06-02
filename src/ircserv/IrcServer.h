@@ -21,6 +21,8 @@
 #include <pthread.h>
 #include <stdlib.h>
 #include <queue>
+#include <unordered_map>
+#define hash_map unordered_map
 #ifndef __CONNECTION_H
 #include <Connection.h>
 #endif
@@ -30,6 +32,7 @@
 #ifndef __SERVER_H
 #include <server.h>
 #endif
+typedef void (IrcServer::*lineHandler)(IrcConn*, vector<string>*); //DO NOT TOUCH
 
 class Channel;
 using std::queue;
@@ -45,6 +48,8 @@ class IrcServer : Server{
 	list<User*>* users;
 	list<Channel*>* chans;
 	IrcConn* getConnectionByNick(string);
+	hash_map<string,lineHandler>* lineHandlers;
+	void addFunctionPointers();
 	void addUserFromConn(IrcConn*);
 	bool readConfig(string);
 	void handleConfig(string,int);
@@ -59,23 +64,28 @@ class IrcServer : Server{
 	void pingLine(IrcConn*, vector<string>*);
 	void quitLine(IrcConn*, vector<string>*);
 	
+	//Mid-level commands
 	void initial(IrcConn*);
+	void motd(IrcConn*);
 
-	//RPL sending methods
+	//RPL sending methods. These are in ascending numerical order. DO NOT CHANGE.
   void welcome(IrcConn*);
 	void yourHost(IrcConn*);
 	void created(IrcConn*);
 	void myInfo(IrcConn*);
 	void iSupport(IrcConn*);
-	void away(IrcConn*, User*);
-	void notAway(IrcConn*);
-	void nowAway(IrcConn*);
 	void luserClient(IrcConn*);
 	void luserOp(IrcConn*);
 	void luserChan(IrcConn*);
 	void luserMe(IrcConn*);
+	void away(IrcConn*, User*);
+	void notAway(IrcConn*);
+	void nowAway(IrcConn*);
+	void motdBody(IrcConn*, string);
+	void motdStart(IrcConn*);
+	void motdEnd(IrcConn*);
 
-	//ERR sending methods
+	//ERR sending methods. Also in ascending numeric order.
 	void noNickGiven(IrcConn*);
 	void errNick(IrcConn*, string);
 	void nickUsed(IrcConn*, string);

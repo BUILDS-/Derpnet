@@ -28,19 +28,35 @@
 #ifndef __USER_H
 #include "User.h"
 #endif
+#ifndef __IRC_H
+#include "irc.h"
+#endif
 #define ALPHA_L "abcdefghijklmnopqrstuvwxyz"
 #define ALPHA_U "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 #define NUM "0123456789"
 #define SPECIAL "`_+=[]{}|<>"
 #define WHITESPACE " \r\t\n"
 #define IRCD_VERSION "Derpnet0.0.1"
+#define hash_map unordered_map
+#define get_memfun(object,fnPtr)	((object).*(fnPtr)) //Sorry for #define macros but in this case it's a marginally better idea than the awful normal syntax
 using namespace std;
 
 IrcServer::IrcServer() {
   this->conns = new list<IrcConn*>();
 	this->users = new list<User*>();
 	this->chans = new list<Channel*>();
+	this->lineHandlers = new hash_map<string,lineHandler>();
+	addFunctionPointers();
 	readConfig("irc.conf");
+}
+
+void IrcServer::addFunctionPointers() {
+	(*lineHandlers)["nick"]=&IrcServer::nickLine;
+	(*lineHandlers)["user"]=&IrcServer::userLine;
+	(*lineHandlers)["privmsg"]=&IrcServer::privmsgLine;
+	(*lineHandlers)["mode"]=&IrcServer::modeLine;
+	(*lineHandlers)["ping"]=&IrcServer::pingLine;
+	(*lineHandlers)["quit"]=&IrcServer::quitLine;
 }
 
 bool IrcServer::readConfig(string filename) {
@@ -99,45 +115,9 @@ void IrcServer::handleLine(IrcConn* c, bool hasPrefix, string prefix, string com
 
 	command = toLower(command);
 
-	bool commandRecognized = false;
-
-  if(command.compare(string("nick")) == 0) { 
-	  //RFC: NICK <nick>
-		commandRecognized = true;
-		nickLine(c, params);
-  }
-
-  if(command.compare(string("user")) == 0) {
-	  //RFC: USER <uname> <mode> <unused> <rname>
-		commandRecognized = true;
-		userLine(c, params);
-  } 
-
-	if(command.compare(string("privmsg")) == 0) {
-		//RFC: PRIVMSG <targets> <message>
-		commandRecognized = true;
-		privmsgLine(c, params);
-	}
-
-	if(command.compare(string("mode")) == 0) {
-		//RFC: MODE <nick> <mode>
-		commandRecognized = true;
-		modeLine(c, params);
-	}
-
-	if(command.compare(string("ping")) == 0) {
-		//RFC: PING
-		commandRecognized = true;
-		pingLine(c, params);
-	}
-
-	if(command.compare(string("quit")) == 0) {
-		//RFC: QUIT
-		commandRecognized = true;
-		quitLine(c, params);
-	}
-
-	if(!commandRecognized) {
+	if(lineHandlers->count(command.c_str()) == 1) { 
+		get_memfun(*this,(*lineHandlers)[command.c_str()])(c,params); //I totally don't trust that this method isn't going to segfault.
+	} else {
 		//Unrecognized command!
 		printf("Can't interpret line with command %s\n",command.c_str());
 	}
@@ -159,7 +139,7 @@ void IrcServer::nickLine(IrcConn* c, vector<string>* params) {
 				c->isReady = true;
 			}
 		} else {
-			errNick(c,nick);
+			errNick(c,nick); //ERR_ERRONEOUSNICKNAME
 		}
   }
 }
@@ -280,25 +260,26 @@ void IrcServer::numericLiteral(IrcConn* c, int code, string message) {
 
 void IrcServer::welcome(IrcConn* c) {
 	//RPL_WELCOME 
-	numericLine(c,1,"Welcome to the Derpnet IRC Network " + c->nick + "!" + c->user + "@" + c->host);
+	numericLine(c,RPL_WELCOME,"Welcome to the Derpnet IRC Network " + c->nick + "!" + c->user + "@" + c->host);
 }
 
 void IrcServer::yourHost(IrcConn* c) {
-	//RPL_YOURHOST.
-	numericLine(c,2,"Your host is " + servername + ", running version " + IRCD_VERSION);
+	//RPL_YOURHOST
+	numericLine(c,RPL_YOURHOST,"Your host is " + servername + ", running version " + IRCD_VERSION);
 }
 
 void IrcServer::created(IrcConn* c) {
-	//RPL_CREATED.
-	numericLine(c,3,"This server was created at Three in the Morning (RJ'S I Can Barely Sleep In This Casino Remix), June 1st, 2011");
+	//RPL_CREATED
+	numericLine(c,RPL_CREATED,"This server was created at Three in the Morning (RJ'S I Can Barely Sleep In This Casino Remix), June 1st, 2011");
 }
 
 void IrcServer::myInfo(IrcConn* c) {
 	//RPL_MYINFO
-	numericLine(c,4,fullhost + " " + IRCD_VERSION + " i r");
+	numericLine(c,RPL_MYINFO,fullhost + " " + IRCD_VERSION + " i r");
 }
 
 void IrcServer::iSupport(IrcConn* c) {
+	//RPL_ISUPPORT. See the ISUPPORT document.
 	string supports("");
 	supports += "PREFIX=(hov)%@+ ";
 	supports += "NICKLEN=30 ";
@@ -307,57 +288,72 @@ void IrcServer::iSupport(IrcConn* c) {
 	supports += "CHANLIMIT=30 ";
 
 	supports += "are supported by this server";
-	numericLine(c,5,supports);
-}
-
-void IrcServer::away(IrcConn* c, User* attempted) { 
-	//RPL_AWAY
-	numericLiteral(c,301,attempted->nick + " :" + attempted->awayMsg);
-}
-
-void IrcServer::notAway(IrcConn* c) {
-	//RPL_UNAWAY
-	numericLine(c,305,"You are no longer marked as being away");
-}
-
-void IrcServer::nowAway(IrcConn* c) {
-	//RPL_NOWAWAY
-	numericLine(c,306,"You have been marked as being away");
+	numericLine(c,RPL_ISUPPORT,supports);
 }
 
 void IrcServer::luserClient(IrcConn* c) {
 	//RPL_LUSERCLIENT
-	numericLine(c,251,"There are " + toString(users->size()) + " users and " + toString(0) + " services on " + toString(1) + " servers");
+	numericLine(c,RPL_LUSERCLIENT,"There are " + toString(users->size()) + " users and " + toString(0) + " services on " + toString(1) + " servers");
 }
 
 void IrcServer::luserOp(IrcConn* c) {
 	//RPL_LUSEROP
-	numericLiteral(c,252,toString(0) + " :operator(s) online");
+	numericLiteral(c,RPL_LUSEROP,toString(0) + " :operator(s) online");
 }
 
 void IrcServer::luserChan(IrcConn* c) {
 	//RPL_LUSERCHANNELS
-	numericLiteral(c,253,toString(chans->size()) + " :channels formed");
+	numericLiteral(c,RPL_LUSERCHANNELS,toString(chans->size()) + " :channels formed");
 }
 
 void IrcServer::luserMe(IrcConn* c) { 
 	//RPL_LUSERME
-	numericLine(c,254,"I have " + toString(conns->size()) + " clients and " + toString(0) + " servers");
+	numericLine(c,RPL_LUSERME,"I have " + toString(conns->size()) + " clients and " + toString(0) + " servers");
+}
+
+void IrcServer::away(IrcConn* c, User* attempted) { 
+	//RPL_AWAY
+	numericLiteral(c,RPL_AWAY,attempted->nick + " :" + attempted->awayMsg);
+}
+
+void IrcServer::notAway(IrcConn* c) {
+	//RPL_UNAWAY
+	numericLine(c,RPL_UNAWAY,"You are no longer marked as being away");
+}
+
+void IrcServer::nowAway(IrcConn* c) {
+	//RPL_NOWAWAY
+	numericLine(c,RPL_NOWAWAY,"You have been marked as being away");
+}
+
+void IrcServer::motdBody(IrcConn* c, string line) {
+	//RPL_MOTD
+	numericLine(c,RPL_MOTD,"- " + line.substr(0,80)); //RFC mandates length is no longer than 80 characters (unlike this comment :33)
+}
+
+void IrcServer::motdStart(IrcConn* c) {
+	//RPL_MOTDSTART
+	numericLine(c,RPL_MOTDSTART,"- " + fullhost + " Message of the day - ");
+}
+
+void IrcServer::motdEnd(IrcConn* c) {
+	//RPL_ENDOFMOTD
+	numericLine(c,RPL_ENDOFMOTD,"End of MOTD command");
 }
 
 void IrcServer::noNickGiven(IrcConn* c) {
 	//ERR_NONICKNAMEGIVEN
-	numericLine(c,431,"No nickname given");
+	numericLine(c,ERR_NONICKNAMEGIVEN,"No nickname given");
 }
 
 void IrcServer::errNick(IrcConn* c,string nick) {
 	//ERR_ERRONEOUSNICKNAME
-	c->sendCommand(fullhost,"432",nick + " :Erroneous nickname");
+	numericLiteral(c,ERR_ERRONEOUSNICKNAME,nick + " :Erroneous nickname");
 }
 
 void IrcServer::nickUsed(IrcConn* c, string nick) {
 	//ERR_NICKNAMEINUSE
-	c->sendCommand(fullhost,"433",nick + " :Nickname is already in use.");
+	numericLiteral(c,ERR_NICKNAMEINUSE,nick + " :Nickname is already in use.");
 }
 
 string toLower(string input) {

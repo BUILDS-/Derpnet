@@ -1,0 +1,18 @@
+6/2/2011 01:32
+Welcome to serket.derpnet.oss
+  Ports: 6667
+	Location: Lincoln, MA
+	Admins: Geekthras
+	User limit: 20
+
+Other derpnet servers: None yet, we're working on it!
+
+
+Derpnet is an open-source ircd which uses OTR (Off the Record) encryption
+to ensure a private and secure multiple-individual chat session.
+But you knew that already :)
+
+IMPORTANT NOTICES:
+Be safe kids :3
+
+--Geekthras

@@ -44,6 +44,7 @@ class IrcServer : Server{
   void handleLine(IrcConn*, bool, string, string, vector<string>*);
  private: 
 	string hostname, servername, fullhost;
+	string motd_file;
   list<IrcConn*>* conns;
 	list<User*>* users;
 	list<Channel*>* chans;
@@ -63,6 +64,7 @@ class IrcServer : Server{
 	void modeLine(IrcConn*, vector<string>*);
 	void pingLine(IrcConn*, vector<string>*);
 	void quitLine(IrcConn*, vector<string>*);
+	void motdLine(IrcConn*, vector<string>*);
 	
 	//Mid-level commands
 	void initial(IrcConn*);
@@ -86,11 +88,13 @@ class IrcServer : Server{
 	void motdEnd(IrcConn*);
 
 	//ERR sending methods. Also in ascending numeric order.
+	void noMotd(IrcConn*);
 	void noNickGiven(IrcConn*);
 	void errNick(IrcConn*, string);
 	void nickUsed(IrcConn*, string);
 	void unavailRes(IrcConn*);
 	void errRestricted(IrcConn*);
+
 
 };
 bool validNickname(string);

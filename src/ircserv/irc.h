@@ -21,6 +21,23 @@
 #define RPL_MOTDSTART 375
 #define RPL_ENDOFMOTD 376
 //Error codes
+#define ERR_NOMOTD 422
 #define ERR_NONICKNAMEGIVEN 431
 #define ERR_ERRONEOUSNICKNAME 432
 #define ERR_NICKNAMEINUSE 433
+
+//End of numeric codes
+#define ALPHA_L "abcdefghijklmnopqrstuvwxyz"
+#define ALPHA_U "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+#define NUM "0123456789"
+#define SPECIAL "`_+=[]{}|<>"
+#define WHITESPACE " \r\t\n"
+#define IRCD_VERSION "Derpnet0.0.1"
+
+//Modes
+
+#define MODES_A "b"
+#define MODES_B "k"
+#define MODES_C "l"
+#define MODES_D "im"
+#define MODES_USR "ir"

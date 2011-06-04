@@ -24,15 +24,44 @@
 #ifndef __USER_H
 #include "User.h"
 #endif
+#ifndef __IRC_H
+#include "irc.h"
+#endif
+#define hash_map unordered_map
+
+/*
+ * For reference: 
+ * struct chan_mode { 
+ * char name;
+ * int type; //One of A_ B_ C_ and D_MODE
+ * bool set; //For C and D modes
+ * string setting; //For B and C modes
+ * list<string>* contents; //For A mode
+ * };
+*/
+
 
 Channel::Channel() {
 	this->users = new list<User*>();
-	this->modes = new list<chan_mode>();
+	this->modes = new hash_map<char,chan_mode*>();
 }
 
 Channel::Channel(string name) {
 	this->name = name;
 	this->users = new list<User*>();
-	this->modes = new list<chan_mode>();
+	this->modes = new hash_map<char,chan_mode*>();
 }
+
+void Channel::initModes() {
+	const char* modesList[] = {MODES_A,MODES_B,MODES_C,MODES_D};
+	int i,j;
+	for(i=0;i<4;i++) {
+		for(j=0;i<sizeof(modesList[i]);i++) { 
+			chan_mode* c = new chan_mode();
+			c->type = i;
+			(*modes)[modesList[j][i]] = c;
+		}
+	}
+}
+
 // vim:ts=4:sw=4

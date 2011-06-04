@@ -15,7 +15,7 @@
 #
 # Copyright (C) 2011 The Derpnet Team.
 
-FLAGS = -pthread -Isockserv -Imulticast -I. -std=gnu++0x
+FLAGS = -pthread -Isockserv -Imulticast -I. -std=gnu++0x 
 SUBDIRS = multicast sockserv ircserv
 .PHONY : subdirs $(SUBDIRS)
 .DEFAULT_GOAL := derpnet

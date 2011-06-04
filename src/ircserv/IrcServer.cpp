@@ -31,12 +31,6 @@
 #ifndef __IRC_H
 #include "irc.h"
 #endif
-#define ALPHA_L "abcdefghijklmnopqrstuvwxyz"
-#define ALPHA_U "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-#define NUM "0123456789"
-#define SPECIAL "`_+=[]{}|<>"
-#define WHITESPACE " \r\t\n"
-#define IRCD_VERSION "Derpnet0.0.1"
 #define hash_map unordered_map
 #define get_memfun(object,fnPtr)	((object).*(fnPtr)) //Sorry for #define macros but in this case it's a marginally better idea than the awful normal syntax
 using namespace std;
@@ -46,6 +40,9 @@ IrcServer::IrcServer() {
 	this->users = new list<User*>();
 	this->chans = new list<Channel*>();
 	this->lineHandlers = new hash_map<string,lineHandler>();
+	this->hostname = "unknown";
+	this->servername = "unknown";
+	this->motd_file = "";
 	addFunctionPointers();
 	readConfig("irc.conf");
 }
@@ -98,6 +95,8 @@ void IrcServer::handleConfig(string line, int lineNo) {
 			this->hostname = setting;
 		if(key.compare("server") == 0)
 			this->servername = setting;
+		if(key.compare("motd") == 0)
+			this->motd_file = setting;
 		
 	}
 }
@@ -225,9 +224,25 @@ void IrcServer::initial(IrcConn* c) {
 	luserOp(c); //RPL_LUSEROP
 	luserChan(c); //RPL_LUSERCHANNELS
 	luserMe(c); //RPL_LUSERME
+	motd(c);
 	addUserFromConn(c);
 }
 
+void IrcServer::motd(IrcConn* c) {
+	ifstream motdStream(motd_file, ifstream::in);
+	if(!motdStream) {
+		noMotd(c); //ERR_NOMOTD
+		return;
+	}
+	motdStart(c);
+	char line[80];
+	while(motdStream.good()) {
+		motdStream.getline(line,80);
+		motdBody(c,string(line));
+	}
+	motdStream.close();
+	motdEnd(c);
+}
 
 IrcConn* IrcServer::getConnectionByNick(string nickname) {
 	IrcConn* connection = NULL;
@@ -247,14 +262,14 @@ void IrcServer::addUserFromConn(IrcConn* c) {
 }
 
 void IrcServer::numericLine(IrcConn* c, int code, string message) {
-	char codeS[3];
-	sprintf(codeS,"%03d",code);
+	char codeS[4];
+	sprintf(codeS,"%03d",code%1000);
 	c->sendCommand(fullhost,codeS,c->nick + " :" + message);
 }
 
 void IrcServer::numericLiteral(IrcConn* c, int code, string message) {
-	char codeS[3];
-	sprintf(codeS,"%03d",code);
+	char codeS[4];
+	sprintf(codeS,"%03d",code%1000);
 	c->sendCommand(fullhost,codeS,c->nick + " " + message);
 }
 
@@ -346,6 +361,11 @@ void IrcServer::noNickGiven(IrcConn* c) {
 	numericLine(c,ERR_NONICKNAMEGIVEN,"No nickname given");
 }
 
+void IrcServer::noMotd(IrcConn* c) {
+	//ERR_NOMOTD
+	numericLine(c,ERR_NOMOTD,"MOTD file is missing");
+}
+
 void IrcServer::errNick(IrcConn* c,string nick) {
 	//ERR_ERRONEOUSNICKNAME
 	numericLiteral(c,ERR_ERRONEOUSNICKNAME,nick + " :Erroneous nickname");
@@ -355,6 +375,8 @@ void IrcServer::nickUsed(IrcConn* c, string nick) {
 	//ERR_NICKNAMEINUSE
 	numericLiteral(c,ERR_NICKNAMEINUSE,nick + " :Nickname is already in use.");
 }
+
+//END OF IRCSERVER METHODS
 
 string toLower(string input) {
 	string s = input.substr();

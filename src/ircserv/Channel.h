@@ -19,6 +19,7 @@
 
 #include <queue>
 #include <stdlib.h>
+#include <unordered_map>
 #include <string>
 #include <list>
 #define __CHAN_H
@@ -28,6 +29,8 @@
 #define B_MODE 2;
 #define C_MODE 3;
 #define D_MODE 4; 
+
+#define hash_map unordered_map
 
 using namespace std;
 class IrcServer;
@@ -41,11 +44,14 @@ struct chan_mode {
 	string setting; //For B and C modes
 	list<string>* contents; //For A mode
 };
+
 class Channel {
 	public :
 		Channel();
 		Channel(string);
 		string name;
 		list<User*>* users;
-		list<chan_mode>* modes;
+		hash_map<char,chan_mode*>* modes;
+	private :
+		void initModes();
 };

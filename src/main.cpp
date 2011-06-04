@@ -38,9 +38,9 @@ int main(int argc, char *argv[]) {
   //Get port number from argv[1]
   if(argc > 1) {
     port = atoi(argv[1]);
-    if(port < 6665 || port > 6675) {
-      printf("Port number not recognized or out of range. Stopping.\n");
-      return -1;
+    if(port < 1000 || port > 65535) {
+			printf("Port number not recognized or out of range. Stopping.\n");
+			return -1;
     }
   }
   //Perform listen loop

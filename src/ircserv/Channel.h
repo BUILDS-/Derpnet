@@ -16,13 +16,15 @@
    *
    * Copyright (C) 2011 The Derpnet Team.
    */
+#ifndef __CHAN_H
+#define __CHAN_H
 
 #include <queue>
 #include <stdlib.h>
 #include <unordered_map>
 #include <string>
 #include <list>
-#define __CHAN_H
+
 //Constants for the four types of modes. A brief summary can be found in the
 // ISUPPORT reference document.
 #define A_MODE 1;
@@ -55,3 +57,5 @@ class Channel {
 	private :
 		void initModes();
 };
+
+#endif

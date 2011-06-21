@@ -17,7 +17,9 @@
  * Copyright (C) 2011 The Derpnet Team.
  */
 
+#ifndef __CONNECTION_H
 #define __CONNECTION_H
+
 #include <pthread.h>
 #include <string>
 #include <stdlib.h>
@@ -49,3 +51,5 @@ class Connection {
   void (*recvCallback)(const char*,Connection*);
 	sockaddr* client;
 };
+
+#endif

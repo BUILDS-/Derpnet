@@ -17,7 +17,9 @@
  * Copyright (C) 2011 The Derpnet Team.
  */
 
+#ifndef __IRCCONN_H
 #define __IRCCONN_H
+
 #include <pthread.h>
 #include <stdlib.h>
 #ifndef __CONNECTIONWRAPPER_H 
@@ -49,3 +51,5 @@ class IrcConn : public ConnectionWrapper{
   IrcServer* parent;
 	User* owner;
 };
+
+#endif

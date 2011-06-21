@@ -17,9 +17,12 @@
  * Copyright (C) 2011 The Derpnet Team.
  */
 
+#ifndef __SOCKSERV_H
+#define __SOCKSERV_H
+
 #define CONN_CLIENT 1
 #define CONN_CLIENTOTR 2
-#define __SOCKSERV_H
+
 #include <list>
 #include <string>
 #include <netinet/in.h>
@@ -38,3 +41,5 @@ class SockServ
   int listener;
   void (*callBack)(int, SockServ*, sockaddr*);
 };
+
+#endif

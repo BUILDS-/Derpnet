@@ -17,7 +17,9 @@
  * Copyright (C) 2011 The Derpnet Team.
  */
 
+#ifndef __MULTICONN_H
 #define __MULTICONN_H
+
 #include <pthread.h>
 #include <stdlib.h>
 #include <ConnectionWrapper.h>
@@ -33,3 +35,5 @@ class MultiConn : public ConnectionWrapper{
   void onReceive(const char*);
   static void onReceiveStatic(const char*, void*);
 };
+
+#endif

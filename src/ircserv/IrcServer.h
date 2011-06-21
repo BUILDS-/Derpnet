@@ -17,14 +17,16 @@
  * Copyright (C) 2011 The Derpnet Team.
  */
 
+#ifndef __IRCSERVER_H
 #define __IRCSERVER_H
+
 #include <pthread.h>
 #include <stdlib.h>
 #include <queue>
 #include <unordered_map>
 #define hash_map unordered_map
 #ifndef __CONNECTION_H
-#include <Connection.h>
+#include <sockserv/Connection.h>
 #endif
 #ifndef __IRCCONN_H
 #include "IrcConn.h"
@@ -101,3 +103,5 @@ bool validNickname(string);
 string toLower(string);
 string toString(int);
 string trim(string);
+
+#endif

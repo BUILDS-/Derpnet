@@ -16,10 +16,11 @@
    *
    * Copyright (C) 2011 The Derpnet Team.
    */
-
+#ifndef __CONNECTIONWRAPPER_H
 #define __CONNECTIONWRAPPER_H
+
 #ifndef __CONNECTION_H
-#include <Connection.h>
+#include "sockserv/Connection.h"
 #endif
 class Server;
 class ConnectionWrapper {
@@ -32,3 +33,5 @@ class ConnectionWrapper {
 		Connection c;
 		Server* parent;
 };
+
+#endif

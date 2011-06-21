@@ -16,9 +16,11 @@
    *
    * Copyright (C) 2011 The Derpnet Team.
    */
+#ifndef __SERVER_H
 #define __SERVER_H
+
 #ifndef __CONNECTION_H
-#include <Connection.h>
+#include "sockserv/Connection.h"
 #endif
 class Server {
 	public :
@@ -27,3 +29,5 @@ class Server {
 		//virtual void addSSLConnection(Connection c) = 0;
 	private :
 };
+
+#endif

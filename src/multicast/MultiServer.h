@@ -17,12 +17,14 @@
  * Copyright (C) 2011 The Derpnet Team.
  */
 
+#ifndef __MULTISERVER_H
 #define __MULTISERVER_H
+
 #include <pthread.h>
 #include <stdlib.h>
 #include <queue>
 #ifndef __CONNECTION_H
-#include <Connection.h>
+#include <sockserv/Connection.h>
 #endif
 #ifndef __MULTICONN_H
 #include "MultiConn.h"
@@ -40,3 +42,5 @@ class MultiServer : Server{
  private: 
   list<MultiConn*>* conns;
 };
+
+#endif

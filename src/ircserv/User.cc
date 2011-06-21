@@ -17,23 +17,23 @@
    * Copyright (C) 2011 The Derpnet Team.
    */
 
-#ifndef __USER_H
-#define __USER_H
 
-#include <string>
-using namespace std;
+#include "IrcConn.h"
 
-class Channel;
-class IrcConn;
+#include "User.h"
 
-class User { 
-	public :
-		User();
-		User(IrcConn*);
-		string hostname;
-		bool local;
-		IrcConn* connection;
-		string nick, awayMsg;
-};
 
-#endif	
+User::User() {
+}
+
+User::User(IrcConn*c ) {
+	this->connection = c;
+	this->hostname = c->host;
+	if(c->isServer) { 
+		this->local = false;
+	} else {
+		this->local = true;
+		this->nick = c->nick;
+	}
+	this->awayMsg = string("");
+}

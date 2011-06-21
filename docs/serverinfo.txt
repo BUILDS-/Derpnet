@@ -1,0 +1,13 @@
+Server name: Atogatog
+IP:          173.48.164.52
+DNS routes:  None yet; derpnet.oss pending
+
+Location:    Kit's house (Lexington)
+Maintainer:  Robbie (rharwood)
+Specs:       Thinkpad w/Intel Core 2 Duo @ 1.86GHz, 3 GB RAM
+
+Users:
+  alpha - Robbie
+  beta - Kit
+  gamma - George
+  delta - Colin

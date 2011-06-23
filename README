@@ -1,34 +1,46 @@
 For the Derpnet IRC server project.
 
-The folder docs contains the new set of RFCs for IRC (numbers 2810-2813). The old
-RFC (number 1459) is superceded by these.  In addition, our own technical
-documents are in this folder.
+The folder doc contains the new set of RFCs for IRC (numbers 2810-2813).  The
+old RFC (number 1459) is superceded by these.  In addition, our own technical
+and non-technical documents are in this folder.
 
-We have an IRC channel: #derpnet at irc.foonetic.net. Our faithful bot DerpBot
-will tell us whenever someone pushes an update.
+We have an IRC channel: #derpnet at irc.foonetic.net.  Our faithful bot
+DerpBot will tell us whenever someone pushes an update.  This channel is for
+bootstrap purposes until we have an existing DerpNet implementation.
 
-Open source implementations that we have found should be added here:
-An incomplete Haskell implementation:
-http://chrisdone.com/posts/2011-01-30-hulk-haskell-irc-server.html
+Open source implementations that we have found should be added here: 
+* An incomplete Haskell implementation:
+  http://chrisdone.com/posts/2011-01-30-hulk-haskell-irc-server.html
 
-WE HAVE MIGRATED TO AUTOTOOLS. Here are the important consequences of this:
+WE HAVE MIGRATED TO AUTOTOOLS.  Here are the important consequences of this:
 
-We are now using a non-recursive autoconf/automake. You should edit Makefile.am
-and configure.ac ONLY--- not Makefile itself. That is a scary thing. After
-doing so, before you commit, run 'make clean.' That will propagate the changes
-from those two files to the rest of the important ones. Please look especially
-at Makefile.am, as most of it is pretty simple, and important, if you change
-the structure of the source.
+We are now using a non-recursive autoconf/automake.  You should edit
+Makefile.am and configure.ac ONLY -- not Makefile itself.  That is a scary
+thing.  After doing so, before you commit, run 'make clean'.  That will
+propagate the changes from those two files to the rest of the important ones.
+Please look especially at Makefile.am, as most of it is pretty simple, and
+also important, if you wish change the structure of the source.
 
-Secondly, we now have NEWS and ChangeLog. I'm going to say that we should
+Secondly, we now have NEWS and ChangeLog.  I'm going to say that we should
 probably let ChangeLog be empty until we're at the point where we're making
-small, organized changes. NEWS is a good place to put what you're doing.
+small, organized changes.  NEWS is a good place to put what you're doing.
+
+Thirdly, we now have an AUTHORS file.  This file is not complete, and ideally
+will include @DerpNet email addresses for the authors (possibly in addition to
+other addresses).
 
 Also, style things:
 
 All .h files should be wrapped in #ifndef #endif, as all currently are.
 
-I've grouped includes by class: First, system things outside of Derpnet.
-Second, files within Derpnet that are NOT in the current folder (and thus use
-<> instead of "" --- important!). Third, other files in the same folder, which
-should always use "". Fourth, the file's own header.
+Includes are grouped by class: 
+* First, system things outside of Derpnet.  
+* Second, files within Derpnet that are NOT in the current folder (and thus
+  use <> instead of "" -- important!).  Third, other files in the same
+  folder, which should always use "".  Fourth, the file's own header.
+
+Indentation should be done with tabs.  For users for whom this is not
+desirable, git contains rules which can be used to automatically replace tabs
+and spaces on commits and pulls.
+
+

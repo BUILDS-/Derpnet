@@ -1,13 +1,5 @@
-Server name: Atogatog
-IP:          173.48.164.52
-DNS routes:  None yet; derpnet.oss pending
+DerpNet is currently using a Thinkpad Intel Core 2 Duo @ 1.86GHz with 3 GB RAM
+as a hosting/testbed.  Its IP is 173.48.164.52, but it is not yet open to the
+general public.  Robbie is maintaining this system, which is running Debian
+GNU/Linux 6.0 Squeeze (for the amd64 platform).  DNS routes are forthcoming.
 
-Location:    Kit's house (Lexington)
-Maintainer:  Robbie (rharwood)
-Specs:       Thinkpad w/Intel Core 2 Duo @ 1.86GHz, 3 GB RAM
-
-Users:
-  alpha - Robbie
-  beta - Kit
-  gamma - George
-  delta - Colin

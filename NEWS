@@ -1,1 +1,3 @@
 Just migrated to autoconf/automake. Please note changes in functionality here.
+
+Added globals.cc/h and errors.cc/h, as well as some command-line argument handling -- Colin 

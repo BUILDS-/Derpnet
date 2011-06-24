@@ -17,6 +17,8 @@ src_derpnet_SOURCES = src/ConnectionWrapper.h \
 	src/sockserv/Connection.h \
 	src/sockserv/SockServ.h \
 	src/main.cc \
+	src/errors.cc \
+	src/globals.cc \
 	src/ircserv/Channel.cc \
 	src/ircserv/IrcConn.cc \
 	src/ircserv/IrcServer.cc \

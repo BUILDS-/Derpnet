@@ -19,39 +19,61 @@
 
 #include <iostream>
 #include <stdio.h>
+#include <string.h>
 #include <sys/socket.h>
 #include "sockserv/SockServ.h"
 #include "sockserv/Connection.h"
 #include "multicast/MultiServer.h"
 #include "ircserv/IrcServer.h"
+#include "errors.h"
+#include "globals.h"
 
-IrcServer* server = new IrcServer();
+IrcServer* server;
+
 void addConnection(int desc, SockServ* parent, struct sockaddr* client) {
   Connection newConn = Connection(desc, parent,client);
   server->addConnection(newConn);
 }
 //Basic echoserver code. Running on 24.63.226.212:6667 right now.
 int main(int argc, char *argv[]) {
-  SockServ srv = SockServ();
-  srv.setCallBack((&addConnection));
   int port = 6667;
   //Get port number from argv[1]
-  if(argc > 1) {
-    port = atoi(argv[1]);
-    if(port < 1000 || port > 65535) {
-			printf("Port number not recognized or out of range. Stopping.\n");
-			return -1;
-    }
-  }
-  //Perform listen loop
-  printf("Listening on port %d\n", port);
+	int i = 1;
+	while(i < argc) {
+		if(!strcmp(argv[i],"-p")) {
+			i++;
+			if(i < argc) { 
+				port = atoi(argv[i]);
+				i++;
+			} else {
+				printf("-p requires a parameter\n");
+			}
+		} else if(!strcmp(argv[i],"--help")) {
+			printf("Usage: derpnet [-p port] [--colors] [--nocolors]\n");
+			i++;
+		} else if(!strcmp(argv[i],"--colors")) {
+			hasColors = true;
+			i++;
+		} else if(!strcmp(argv[i],"--nocolors")) {
+			hasColors = false;
+			i++;
+		} else {
+			printf("Invalid argument: %s\n",argv[i]);
+			i++;
+		}
+	}
+  server = new IrcServer();
+  SockServ srv = SockServ();
+  srv.setCallBack((&addConnection));
+ //Perform listen loop
+  statusMsg("Listening on port %d", port);
   if(srv.beginListen(port,CONN_CLIENT)) {
-    printf("Successfully listened on port %d\n",port);
-    return 1;
-  } else {
-	printf("Problem!\n");
-    perror("Problem during listening");
+    statusMsg("Successfully listened on port %d\n",port);
     return 0;
+  } else {
+		majorError("Problem during listening: %s",strerror(errno));
+		exit(errno);
+    return errno;
   }
  
 }

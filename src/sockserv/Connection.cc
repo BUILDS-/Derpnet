@@ -34,6 +34,7 @@
 #include <netdb.h>
 
 #include <ConnectionWrapper.h>
+#include <errors.h>
 
 #include "Connection.h"
 
@@ -58,7 +59,6 @@ Connection::Connection(int sockd, SockServ* serv, struct sockaddr *client) {
 	sockaddr_in sin;
 	int err = getnameinfo(client, sizeof sin, host, NI_MAXHOST, server, NI_MAXSERV,0);
 	this->host = string(host);
-	printf("Host is %s\n",host);
 }
 
 void Connection::RunLoop() {
@@ -74,7 +74,7 @@ void Connection::RunLoop() {
 			try {
 			} catch(...) {
 			}
-			printf("Exploding\n");
+      errorMsg("Removing broken connection");
 			parent->connections.remove(conn_desc);
 			pthread_exit(NULL);
 			return;
@@ -82,7 +82,7 @@ void Connection::RunLoop() {
 			try {
 			} catch(...) {
 			}
-			printf("Dying\n");
+      statusMsg("Removing closed connection");
 			parent->connections.remove(conn_desc);
 			pthread_exit(NULL);
 			return;
@@ -95,14 +95,7 @@ void Connection::RunLoop() {
 				try {
 					onRecv(line.substr(0,llength).c_str());
 				} catch(...) {
-					printf("ERROR!\n");
-				}
-				if(line.compare("EXIT\n") == 0) {
-					printf("Client connection %d requested close. Complying.\n", conn_desc);
-					close(conn_desc);
-					parent->connections.remove(conn_desc);
-					pthread_exit(NULL);
-					return;
+          errorMsg("Error when processing line from client: %s",strerror(errno));
 				}
 				llength = msgbuf.find('\n');
 			}
@@ -132,8 +125,7 @@ void * Connection::DoLoop(void* args) {
 	try {
 		c->RunLoop();
 	} catch (int e) {
-		printf("ERROR\n");
-		printf("ERROR: %d\n",e);
+		errorMsg("Error in connection loop: %d",e);
 	}
 }
 

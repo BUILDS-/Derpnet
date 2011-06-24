@@ -39,6 +39,15 @@ Includes are grouped by class:
   use <> instead of "" -- important!).  Third, other files in the same
   folder, which should always use "".  Fourth, the file's own header.
 
+Please avoid using printf in favor of one of the message methods in errors.cc;
+ the guidelines for usage are:
+* Status messages are for normal messages of any kind
+* Warnings indicate a potential problem that doesn't disrupt service (yet)
+* Errors mean there may have been a minor disruption of service for a few users
+* Major errors are problems that completely disrupt service on a large scale
+  and may require drastic action to resolve, such as a server restart. These
+	should not be suppressed or ignored.
+
 Indentation should be done with tabs.  For users for whom this is not
 desirable, git contains rules which can be used to automatically replace tabs
 and spaces on commits and pulls.

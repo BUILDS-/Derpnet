@@ -29,6 +29,8 @@
 #include <string>
 #include <stdio.h>
 
+#include <errors.h>
+
 #include "Connection.h"
 
 #include "SockServ.h"
@@ -57,18 +59,15 @@ bool SockServ::beginListen(int port, int conn_type) {
 	dest.sin_port = htons(port);
 	dest.sin_addr.s_addr = htonl (INADDR_ANY);
 
-	printf("Port: %d; Type: %d\n",port,conn_type);
-
-	printf("Getting socket...\t\t\t"); //Allocates a socket and binds it to the requested port
+	partialLine("Getting socket");
 	listener = socket(AF_INET,SOCK_STREAM,0);
 	if(listener == -1) {
 		printf("Failed.\n");
 	} else {
 		printf("Succeeded.\n");
 	}
-	printf("\tDescriptor = %d\n",listener);
 
-	printf("Binding socket...\t\t\t");
+	partialLine("Binding socket");
 	if(bind(listener, (struct sockaddr *)&dest, sizeof dest) == -1) {
 		printf("Failed\n");
 		return false;
@@ -76,30 +75,27 @@ bool SockServ::beginListen(int port, int conn_type) {
 		printf("Succeeded\n");
 	}
 
-	printf("Listening...\t\t\t\t"); //Prepare the socket for getting incoming connections.
+	partialLine("Listening"); //Prepare the socket for getting incoming connections.
 	if(listen(listener,MAX_INC_CONNECTIONS*20) == -1) {
-		printf("Failed.\n");
+		printf("Failed\n");
 		return false;
 	} else {
-		printf("Succeeded.\n");
+		printf("Succeeded\n");
 	}
 
 	socklen_t addr_sz = sizeof client;
 	int client_desc;
+	statusMsg("Now awaiting client connections");
 	while(true) { 
-		printf("Waiting for an incoming connection...");
-
 		try {
 			client_desc = accept(listener,(struct sockaddr *)&client,&addr_sz);
-			
-			printf("Found.\n");
 		} catch (int e) {
-			printf("Error Accepting: %d\n",e);
+			errorMsg("Error accepting client connection: %d",e);
 		}
 		if(client_desc == -1) {
-			printf("\tAccept failed!\n");
+			errorMsg("Client doesn't exist");
 		} else {
-			printf("\tClient descriptor: %d\n", client_desc);
+			statusMsg("Client accepted successfully!");
 			connections.push_back(client_desc);
 			callBack(client_desc, this, (struct sockaddr* )&client);
 		}

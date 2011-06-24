@@ -52,6 +52,8 @@ am__installdirs = "$(DESTDIR)$(bindir)"
 PROGRAMS = $(bin_PROGRAMS)
 am__dirstamp = $(am__leading_dot)dirstamp
 am_src_derpnet_OBJECTS = src/src_derpnet-main.$(OBJEXT) \
+	src/src_derpnet-errors.$(OBJEXT) \
+	src/src_derpnet-globals.$(OBJEXT) \
 	src/ircserv/src_derpnet-Channel.$(OBJEXT) \
 	src/ircserv/src_derpnet-IrcConn.$(OBJEXT) \
 	src/ircserv/src_derpnet-IrcServer.$(OBJEXT) \
@@ -197,6 +199,8 @@ src_derpnet_SOURCES = src/ConnectionWrapper.h \
 	src/sockserv/Connection.h \
 	src/sockserv/SockServ.h \
 	src/main.cc \
+	src/errors.cc \
+	src/globals.cc \
 	src/ircserv/Channel.cc \
 	src/ircserv/IrcConn.cc \
 	src/ircserv/IrcServer.cc \
@@ -307,6 +311,10 @@ src/$(DEPDIR)/$(am__dirstamp):
 	@: > src/$(DEPDIR)/$(am__dirstamp)
 src/src_derpnet-main.$(OBJEXT): src/$(am__dirstamp) \
 	src/$(DEPDIR)/$(am__dirstamp)
+src/src_derpnet-errors.$(OBJEXT): src/$(am__dirstamp) \
+	src/$(DEPDIR)/$(am__dirstamp)
+src/src_derpnet-globals.$(OBJEXT): src/$(am__dirstamp) \
+	src/$(DEPDIR)/$(am__dirstamp)
 src/ircserv/$(am__dirstamp):
 	@$(MKDIR_P) src/ircserv
 	@: > src/ircserv/$(am__dirstamp)
@@ -362,11 +370,15 @@ mostlyclean-compile:
 	-rm -f src/multicast/src_derpnet-MultiServer.$(OBJEXT)
 	-rm -f src/sockserv/src_derpnet-Connection.$(OBJEXT)
 	-rm -f src/sockserv/src_derpnet-SockServ.$(OBJEXT)
+	-rm -f src/src_derpnet-errors.$(OBJEXT)
+	-rm -f src/src_derpnet-globals.$(OBJEXT)
 	-rm -f src/src_derpnet-main.$(OBJEXT)
 
 distclean-compile:
 	-rm -f *.tab.c
 
+@AMDEP_TRUE@@am__include@ @am__quote@src/$(DEPDIR)/src_derpnet-errors.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@src/$(DEPDIR)/src_derpnet-globals.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@src/$(DEPDIR)/src_derpnet-main.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@src/ircserv/$(DEPDIR)/src_derpnet-Channel.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@src/ircserv/$(DEPDIR)/src_derpnet-IrcConn.Po@am__quote@
@@ -406,6 +418,34 @@ src/src_derpnet-main.obj: src/main.cc
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='src/main.cc' object='src/src_derpnet-main.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(src_derpnet_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o src/src_derpnet-main.obj `if test -f 'src/main.cc'; then $(CYGPATH_W) 'src/main.cc'; else $(CYGPATH_W) '$(srcdir)/src/main.cc'; fi`
+
+src/src_derpnet-errors.o: src/errors.cc
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(src_derpnet_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT src/src_derpnet-errors.o -MD -MP -MF src/$(DEPDIR)/src_derpnet-errors.Tpo -c -o src/src_derpnet-errors.o `test -f 'src/errors.cc' || echo '$(srcdir)/'`src/errors.cc
+@am__fastdepCXX_TRUE@	$(am__mv) src/$(DEPDIR)/src_derpnet-errors.Tpo src/$(DEPDIR)/src_derpnet-errors.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='src/errors.cc' object='src/src_derpnet-errors.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(src_derpnet_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o src/src_derpnet-errors.o `test -f 'src/errors.cc' || echo '$(srcdir)/'`src/errors.cc
+
+src/src_derpnet-errors.obj: src/errors.cc
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(src_derpnet_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT src/src_derpnet-errors.obj -MD -MP -MF src/$(DEPDIR)/src_derpnet-errors.Tpo -c -o src/src_derpnet-errors.obj `if test -f 'src/errors.cc'; then $(CYGPATH_W) 'src/errors.cc'; else $(CYGPATH_W) '$(srcdir)/src/errors.cc'; fi`
+@am__fastdepCXX_TRUE@	$(am__mv) src/$(DEPDIR)/src_derpnet-errors.Tpo src/$(DEPDIR)/src_derpnet-errors.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='src/errors.cc' object='src/src_derpnet-errors.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(src_derpnet_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o src/src_derpnet-errors.obj `if test -f 'src/errors.cc'; then $(CYGPATH_W) 'src/errors.cc'; else $(CYGPATH_W) '$(srcdir)/src/errors.cc'; fi`
+
+src/src_derpnet-globals.o: src/globals.cc
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(src_derpnet_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT src/src_derpnet-globals.o -MD -MP -MF src/$(DEPDIR)/src_derpnet-globals.Tpo -c -o src/src_derpnet-globals.o `test -f 'src/globals.cc' || echo '$(srcdir)/'`src/globals.cc
+@am__fastdepCXX_TRUE@	$(am__mv) src/$(DEPDIR)/src_derpnet-globals.Tpo src/$(DEPDIR)/src_derpnet-globals.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='src/globals.cc' object='src/src_derpnet-globals.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(src_derpnet_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o src/src_derpnet-globals.o `test -f 'src/globals.cc' || echo '$(srcdir)/'`src/globals.cc
+
+src/src_derpnet-globals.obj: src/globals.cc
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(src_derpnet_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT src/src_derpnet-globals.obj -MD -MP -MF src/$(DEPDIR)/src_derpnet-globals.Tpo -c -o src/src_derpnet-globals.obj `if test -f 'src/globals.cc'; then $(CYGPATH_W) 'src/globals.cc'; else $(CYGPATH_W) '$(srcdir)/src/globals.cc'; fi`
+@am__fastdepCXX_TRUE@	$(am__mv) src/$(DEPDIR)/src_derpnet-globals.Tpo src/$(DEPDIR)/src_derpnet-globals.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='src/globals.cc' object='src/src_derpnet-globals.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(src_derpnet_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o src/src_derpnet-globals.obj `if test -f 'src/globals.cc'; then $(CYGPATH_W) 'src/globals.cc'; else $(CYGPATH_W) '$(srcdir)/src/globals.cc'; fi`
 
 src/ircserv/src_derpnet-Channel.o: src/ircserv/Channel.cc
 @am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(src_derpnet_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT src/ircserv/src_derpnet-Channel.o -MD -MP -MF src/ircserv/$(DEPDIR)/src_derpnet-Channel.Tpo -c -o src/ircserv/src_derpnet-Channel.o `test -f 'src/ircserv/Channel.cc' || echo '$(srcdir)/'`src/ircserv/Channel.cc

@@ -25,6 +25,8 @@
 #include <string>
 #include <math.h>
 
+#include <errors.h>
+
 #include "irc.h"
 #include "User.h"
 
@@ -65,9 +67,9 @@ bool IrcServer::readConfig(string filename) {
 			getline(configFile,currentLine);
 			handleConfig(currentLine, lineNo++);
 		}
-	configFile.close();
+		configFile.close();
 	} else {
-		printf("Error: Could not open configuration file %s\n", filename.c_str());
+		warningMsg("Could not open configuration file %s for reading.",filename.c_str());
 		return false;
 	}
 	fullhost = servername + "." + hostname;
@@ -85,7 +87,7 @@ void IrcServer::handleConfig(string line, int lineNo) {
 	int equalsIndex = line.find('=');
 	if(equalsIndex == -1) { 
 		if(line.find_first_not_of(WHITESPACE) != -1) {
-			printf("Error in line %d of config: Expected '=' but none found. Proceeding anyway.\n",lineNo);
+			warningMsg("Error in line %d of config: Expected '=' but none found. Proceeding anyway.",lineNo);
 		}
 	} else {
 		key = toLower(trim(line.substr(0,equalsIndex)));
@@ -105,7 +107,7 @@ void IrcServer::handleConfig(string line, int lineNo) {
 void IrcServer::addConnection(Connection connection) {
   IrcConn* mc = new IrcConn(this, connection);
   this->conns->push_back(mc);
-  printf("Connection added\n");
+  statusMsg("Connection added");
 }
 
 void IrcServer::handleLine(IrcConn* c, bool hasPrefix, string prefix, string command, vector<string>* params) {
@@ -118,7 +120,8 @@ void IrcServer::handleLine(IrcConn* c, bool hasPrefix, string prefix, string com
 		get_memfun(*this,(*lineHandlers)[command.c_str()])(c,params); //I totally don't trust that this method isn't going to segfault.
 	} else {
 		//Unrecognized command!
-		printf("Can't interpret line with command %s\n",command.c_str());
+		//Next line should be only for debugging!
+		warningMsg("Can't interpret line with command %s\n",command.c_str());
 	}
 }
 	

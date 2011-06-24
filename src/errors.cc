@@ -25,7 +25,7 @@
 
 void colorPrefix(const char* prefix, bool light, int color, const char* fmt, va_list args, bool partial) {
 	char newFmt[strlen(fmt)+strlen(prefix) + 16];
-	sprintf(newFmt,"\033[%d;%dm%s\033[0;%dm",light,color,prefix,FG_WHITE);
+	sprintf(newFmt,"\033[%d;%dm%s\033[0;%dm",light,hasColors?color:FG_WHITE,prefix,FG_WHITE);
 	strcat(newFmt,fmt);
 	vprintf(newFmt,args);
 	if(!partial) {
@@ -42,51 +42,36 @@ void colorPrefix(const char* prefix, bool light, int color, const char* fmt, va_
 void statusMsg(const char* fmt, ...) {
 	va_list args;
 	va_start(args, fmt);
-	if(!hasColors) {
-		colorPrefix(" * ", false, FG_WHITE, fmt, args);
-	} else {
-		colorPrefix(" * ", false, FG_GREEN, fmt, args);
-	}
+	colorPrefix(" * ", false, FG_GREEN, fmt, args);
+	va_end(args);
 }
 
 void warningMsg(const char* fmt, ...) {
 	va_list args;
 	va_start(args, fmt);
-	if(!hasColors) {
-		colorPrefix(" * ", false, FG_WHITE, fmt, args);
-	} else {
-		colorPrefix(" * ", false, FG_YELLOW, fmt, args);
-	}
+	colorPrefix(" * ", true, FG_YELLOW, fmt, args);
+	va_end(args);
 }
 
 void errorMsg(const char* fmt, ...) {
 	va_list args;
 	va_start(args, fmt);
-	if(!hasColors) {
-		colorPrefix(" ! ", false, FG_WHITE, fmt, args);
-	} else {
-		colorPrefix(" ! " , false, FG_RED, fmt, args);
-	}
+	colorPrefix(" ! ", false, FG_RED, fmt, args);
+	va_end(args);
 }
 
 void majorError(const char* fmt, ...) {
 	va_list args;
 	va_start(args, fmt);
-	if(!hasColors) {
-		colorPrefix("!!! ", true, FG_WHITE, fmt, args);
-	} else {
-		colorPrefix("!!! ", true, FG_RED, fmt, args);
-	}
+	colorPrefix("!!! ", true, FG_RED, fmt, args);
+	va_end(args);
 }
 
 void partialLine(const char* fmt, ...) {
 	va_list args;
 	va_start(args, fmt);
-	if(!hasColors) {
-		colorPrefix(" * ", false, FG_WHITE, fmt, args,true);
-	} else {
-		colorPrefix(" * ", false, FG_GREEN, fmt, args,true);
-	}
+	colorPrefix(" * ", false, FG_GREEN, fmt, args,true);
+	va_end(args);
 }
 
 

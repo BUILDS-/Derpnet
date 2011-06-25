@@ -38,6 +38,7 @@ class IrcConn : public ConnectionWrapper{
   void sendCommand(string, string, string);
   void sendCommand(int, string);
   void sendCommand(string, int, string);
+	void quit();
 	User* getUser();
 	void setUser(User*);
   bool isServer;

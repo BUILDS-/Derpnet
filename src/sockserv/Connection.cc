@@ -137,4 +137,10 @@ void Connection::setRecv(void (* cb)(const char*,Connection*)) {
 void Connection::onRecv(const char * input) {
 	cw->onReceive(input);
 }
+
+void Connection::closeConn() {
+  close(this->conn_desc);
+  parent->connections.remove(this->conn_desc);
+}
+
 /* vim: set expandtab sw=2: */

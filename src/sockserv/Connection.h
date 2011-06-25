@@ -38,6 +38,7 @@ class Connection {
   void RunLoop();
   void setRecv(void (*)(const char*,Connection*));
   void onRecv(const char*);
+	void closeConn();
   int conn_desc;
   SockServ* parent;
   ConnectionWrapper* cw;

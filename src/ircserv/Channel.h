@@ -52,10 +52,13 @@ class Channel {
 		Channel();
 		Channel(string);
 		string name;
-		list<User*>* users;
 		hash_map<char,chan_mode*>* modes;
+		void addUser(User*);
+		User* findNick(string);
+		list<string> getNicks();
 	private :
 		void initModes();
+		list<User*>* users;
 };
 
 #endif

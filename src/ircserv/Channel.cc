@@ -49,6 +49,13 @@ Channel::Channel(string name) {
 	this->modes = new hash_map<char,chan_mode*>();
 }
 
+void Channel::addUser(User* user) {
+	this->users->push_back(user);
+}
+
+User* Channel::findNick(string nickname) {
+}
+
 void Channel::initModes() {
 	const char* modesList[] = {MODES_A,MODES_B,MODES_C,MODES_D};
 	int i,j;
@@ -61,4 +68,4 @@ void Channel::initModes() {
 	}
 }
 
-// vim:ts=4:sw=4
+// vim:ts=2:sw=2

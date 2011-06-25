@@ -113,15 +113,9 @@ void IrcConn::onReceive(const char* message) {
 		  }
 	  }
   }
-  /*printf("Params are:");
-  for(vector<string>::iterator it = params->begin();it != params->end(); it++) {
-	  printf(" %s", (*it).c_str());
-  }
-  printf("\n"); */
-  
+ 
   //Let the server execute the command now that we've parsed it.
   parent->handleLine(this, hasPrefix, prefix, command, params);
-  
 }
 
 void IrcConn::send(const char* message) {
@@ -138,6 +132,10 @@ void IrcConn::sendCommand(string command, string params) {
 
 void IrcConn::sendCommand(string prefix, string command, string params) {
   send(":" + prefix + " " + command + " " + params);
+}
+
+void IrcConn::quit() {
+	this->c.closeConn();
 }
 
 string IrcConn::getTitle() { 

@@ -94,7 +94,10 @@ class IrcServer : Server{
 	void noNickGiven(IrcConn*);
 	void errNick(IrcConn*, string);
 	void nickUsed(IrcConn*, string);
-	void unavailRes(IrcConn*);
+	void unavailRes(IrcConn*, string);
+	void notRegistered(IrcConn*);
+	void moreParams(IrcConn*, string);
+	void alreadyRegistered(IrcConn*);
 	void errRestricted(IrcConn*);
 
 

@@ -149,7 +149,7 @@ void IrcServer::nickLine(IrcConn* c, vector<string>* params) {
 void IrcServer::userLine(IrcConn* c, vector<string>* params) {
 	//USER line. Params = <user> <mode> <unused> <realname>
   if(params->size() < 4) { 
-	  //ERR_NEEDMOREPARAMS
+	  moreParams(c, "USER"); //ERR_NEEDMOREPARAMS
   } else {
 		string uname = params->at(0);
 		c->user = uname;
@@ -183,7 +183,7 @@ void IrcServer::privmsgLine(IrcConn* c, vector<string>* params) {
 
 void IrcServer::modeLine(IrcConn* c, vector<string>* params) {
 	if(params->size() < 1) {
-		//ERR_NEEDMOREPARAMS
+		moreParams(c,"MODE"); //ERR_NEEDMOREPARAMS
 	} else {
 		if(toLower(params->at(0)).compare(c->nick_lower) != 0) {
 			//ERR_USERSDONTMATCH
@@ -213,6 +213,17 @@ void IrcServer::quitLine(IrcConn* c, vector<string>* params) {
 		//QUIT them with a message
 	} else {
 		//QUIT them without one
+	}
+	c->sendCommand(fullhost, "ERROR"); //Yes, this is what you're supposed to do
+	c->quit();
+	conns->remove(c);
+}
+
+void IrcServer::motdLine(IrcConn* c, vector<string>* params) {
+	if(params->size() == 1) {
+		motd(c);
+	} else {
+		//Send on the MOTD line to the given server
 	}
 }
 
@@ -377,6 +388,31 @@ void IrcServer::errNick(IrcConn* c,string nick) {
 void IrcServer::nickUsed(IrcConn* c, string nick) {
 	//ERR_NICKNAMEINUSE
 	numericLiteral(c,ERR_NICKNAMEINUSE,nick + " :Nickname is already in use.");
+}
+
+void IrcServer::unavailRes(IrcConn* c, string resource) {
+	//ERR_UNAVAILRESOURCE
+	numericLiteral(c,ERR_UNAVAILRESOURCE, resource + " :Nick/channel is temporarily unavailable");
+}
+
+void IrcServer::notRegistered(IrcConn* c) {
+	//ERR_NOTREGISTERED
+	numericLine(c,ERR_NOTREGISTERED, "You have not registered");
+}
+
+void IrcServer::moreParams(IrcConn* c, string command) {
+	//ERR_NEEDMOREPARAMS
+	numericLiteral(c,ERR_NEEDMOREPARAMS, command + " :Not enough parameters");
+}
+
+void IrcServer::alreadyRegistered(IrcConn* c) {
+	//ERR_ALREADYREGISTERED
+	numericLine(c,ERR_ALREADYREGISTERED, "Unauthorized command (already registered)");
+}
+
+void IrcServer::errRestricted(IrcConn* c) {
+	//ERR_RESTRICTED
+	numericLine(c,ERR_RESTRICTED, "Your connection is restricted!");
 }
 
 //END OF IRCSERVER METHODS
